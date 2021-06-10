@@ -5,7 +5,7 @@ const {
     createStartup,
     updateStartup,
     deleteStartup
-} = require('./controllers/startups');
+} = require('../controllers/startups');
 
 const router = express.Router();
 
