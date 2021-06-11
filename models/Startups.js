@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const StartupSchema = new mongoose.Schema({
     name: {
@@ -90,6 +91,14 @@ const StartupSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+});
+
+// Create Startup slug from the name
+// arrow function handle scoop defferently
+StartupSchema.pre('save', function(next) {
+    // console.log('Slugify run', this.name);
+    this.slug = slugify(this.name, { lower: true });
+    next();
 });
 
 module.exports = mongoose.model('Startup', StartupSchema);
