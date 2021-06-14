@@ -1,6 +1,9 @@
 const Startup = require('../models/Startups');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
+const geocoder = require('../utils/geocoder');
+
+
 // @desc    Get all startups
 // @oute    GET /api/v1/Startups
 // @access  Public
@@ -58,4 +61,43 @@ exports.deleteStartup = asyncHandler(async(req, res, next) => {
     if (!startup)
         return next(new ErrorResponse(`Startup not found with id of ${req.params.id}`), 404);
     res.status(200).json({ success: true, data: {} });
+});
+
+
+
+// @desc    Get startup
+// @oute    GET /api/v1/Startups/redius/:zipcode/:distance
+// @access  Private
+exports.getStartupsInRadius = asyncHandler(async(req, res, next) => {
+    const { zipcode, distance } = req.params;
+
+    // Get lat/lng from geocoder
+    const loc = await geocoder.geocode(zipcode);
+
+    const i = loc.length;
+    // console.log('--------------'.blue);
+    // console.log(loc);
+
+    const lat = loc[i - 1].latitude;
+    const lng = loc[i - 1].longitude;
+
+    // Calc raduius using radians
+    // Divide dist by radius of Earth
+    // Earth  RAdius = 6,378 Km
+    const radius = distance / 6378;
+    const startups = await Startup.find({
+        location: {
+            $geoWithin: {
+                $centerSphere: [
+                    [lng, lat], radius
+                ]
+            }
+        }
+    });
+
+    res.status(200).json({
+        success: true,
+        count: startups.length,
+        data: startups
+    });
 });

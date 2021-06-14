@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+// require('dotenv').config({ path: '/custom/path/to/.env' })
 const logger = require('./midlleware/logger');
 
 const color = require('colors');
@@ -12,7 +13,6 @@ const startups = require('./routes/startups');
 
 // load env vars
 dotenv.config({ path: './config/config.env' });
-
 // Connect to database
 connectDB();
 
@@ -43,7 +43,7 @@ const server = app.listen(
     console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow)
 );
 
-//Hndle unhandledpromise rejections
+// Hndle unhandledpromise rejections
 process.on('unhandledRejection', (err, promise) => {
     console.log(`Error: ${err.message}`.red);
     // close server & exit process
