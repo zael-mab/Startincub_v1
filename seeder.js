@@ -8,10 +8,13 @@ dotenv.config({ path: './config/config.env' });
 
 //  Load models
 const Startup = require('./models/Startups');
-const { exit } = require('process');
+const Course = require('./models/Course');
+
+
+// const { exit } = require('process');
 
 // connect to DB
-mongoose.connect('mongodb://localhost:27017/test', {
+mongoose.connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
         useCreateIndex: true,
         useFindAndModify: false,
@@ -20,12 +23,14 @@ mongoose.connect('mongodb://localhost:27017/test', {
     .then((res) => console.log('> Connected...'.bgCyan))
     .catch(err => console.log(`> Error while connecting to mongoDB : ${err.message}`.underline.red));
 
-const startup = JSON.parse(fs.readFileSync(`${__dirname}/_data/startups.json`, 'utf-8'));
+const startups = JSON.parse(fs.readFileSync(`${__dirname}/_data/startups.json`, 'utf-8'));
+const courses = JSON.parse(fs.readFileSync(`${__dirname}/_data/courses.json`, 'utf-8'));
 
 //Import into DB
 const importData = async() => {
     try {
-        await Startup.create(startup);
+        await Startup.create(startups);
+        await Course.create(courses);
 
         console.log('Data Imported...'.green.inverse);
         process.exit();
@@ -38,6 +43,7 @@ const importData = async() => {
 const deleteData = async() => {
     try {
         await Startup.deleteMany();
+        await Course.deleteMany();
 
         console.log('Data Destroyed...'.red.inverse);
         process.exit();

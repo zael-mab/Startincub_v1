@@ -8,11 +8,14 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 
 const errorHandler = require('./midlleware/errors');
+
 // Route files
 const startups = require('./routes/startups');
+const courses = require('./routes/courses');
 
 // load env vars
 dotenv.config({ path: './config/config.env' });
+
 // Connect to database
 connectDB();
 
@@ -30,6 +33,7 @@ if (process.env.NODE_ENV === 'development') {
 
 //  MOUNT routers
 app.use('/api/v1/startups', startups);
+app.use('/api/v1/courses', courses);
 
 
 app.use(errorHandler);
