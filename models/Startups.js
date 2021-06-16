@@ -124,4 +124,3 @@ StartupSchema.pre('save', async function(next) {
 });
 
 module.exports = mongoose.model('Startup', StartupSchema);
-module.exports = mongoose.model('Startup', StartupSchema);

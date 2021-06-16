@@ -11,7 +11,7 @@ const Startup = require('./models/Startups');
 const { exit } = require('process');
 
 // connect to DB
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect('mongodb://localhost:27017/test', {
         useNewUrlParser: true,
         useCreateIndex: true,
         useFindAndModify: false,
@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URI, {
     .then((res) => console.log('> Connected...'.bgCyan))
     .catch(err => console.log(`> Error while connecting to mongoDB : ${err.message}`.underline.red));
 
-const startup = JSON.parse(fs.readFileSync(`${__dirname}/_data/bstartups.json`, 'utf-8'));
+const startup = JSON.parse(fs.readFileSync(`${__dirname}/_data/startups.json`, 'utf-8'));
 
 //Import into DB
 const importData = async() => {
