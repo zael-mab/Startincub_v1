@@ -2,7 +2,7 @@ const Startup = require('../models/Startups');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const geocoder = require('../utils/geocoder');
-
+const path = require('path');
 
 // @desc    Get all startups
 // @oute    GET /api/v1/Startups
@@ -19,7 +19,7 @@ exports.getStartups = asyncHandler(async(req, res, next) => {
     // Lopp over removeField and delete them from reqQuery
     removeFields.forEach(param => delete reqQuery[param]);
 
-    console.log(reqQuery);
+    // console.log(reqQuery);
     // Create query string
     let queryStr = JSON.stringify(reqQuery);
 
@@ -27,7 +27,7 @@ exports.getStartups = asyncHandler(async(req, res, next) => {
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
     //  Finding resource 
-    query = Startup.find(JSON.parse(queryStr));
+    query = Startup.find(JSON.parse(queryStr)).populate('courses');
 
     // Select fields
     if (req.query.select) {
@@ -81,7 +81,7 @@ exports.getStartups = asyncHandler(async(req, res, next) => {
 // @oute    GET /api/v1/Startups/:id
 // @access  Private
 exports.getStartup = asyncHandler(async(req, res, next) => {
-    const startup = await Startup.findById(req.params.id);
+    const startup = await Startup.findById(req.params.id).populate('courses');
 
     if (!startup) {
         return next(new ErrorResponse(`Startup not found with id of ${req.params.id}`), 404);
@@ -121,9 +121,12 @@ exports.updateStartup = asyncHandler(async(req, res, next) => {
 // @oute    DELETE /api/v1/Startups/:id
 // @access  Private
 exports.deleteStartup = asyncHandler(async(req, res, next) => {
-    const startup = await Startup.findByIdAndDelete(req.params.id);
+    const startup = await Startup.findById(req.params.id);
     if (!startup)
-        return next(new ErrorResponse(`Startup not found with id of ${req.params.id}`), 404);
+        return next(
+            new ErrorResponse(`Startup not found with id of ${req.params.id}`),
+            404);
+    startup.remove();
     res.status(200).json({ success: true, data: {} });
 });
 
@@ -169,4 +172,49 @@ exports.getStartupsInRadius = asyncHandler(async(req, res, next) => {
         count: startups.length,
         data: startups
     });
+});
+
+
+
+// @desc    Upload startup
+// @oute    PUT /api/v1/Startups/:id/photo
+// @access  Private
+exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
+    const startup = await Startup.findById(req.params.id);
+    if (!startup)
+        return next(
+            new ErrorResponse(`Startup not found with id of ${req.params.id}`),
+            404);
+    if (!req.files) {
+        return (next(new ErrorResponse(`Please upload a file`, 400)));
+    }
+
+    const file = req.files.file;
+
+    // Make sure the image is a photo
+    if (!file.mimetype.startsWith('image')) {
+        return (next(new ErrorResponse(`Please upload an image file`, 400)));
+    }
+
+    // Check filesize
+    if (file.size > process.env.MAX_FILE_UPLOAD) {
+        return (next(new ErrorResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`, 400)));
+    }
+    // Create custom filename
+    file.name = `photo_${startup._id}${path.parse(file.name).ext}`;
+
+    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+        if (err) {
+            console.error(err);
+            return (next(new ErrorResponse(`Problem with file upload`, 500)));
+        }
+
+        await Startup.findByIdAndUpdate(req.params.id, { photo: file.name });
+        res.status(200).json({
+            success: true,
+            data: file.name
+        });
+    });
+
+    console.log(file.name);
 });

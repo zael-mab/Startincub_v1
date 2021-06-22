@@ -1,7 +1,10 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 // require('dotenv').config({ path: '/custom/path/to/.env' })
 const logger = require('./midlleware/logger');
+
+const fileupload = require('express-fileupload');
 
 const color = require('colors');
 const morgan = require('morgan');
@@ -30,6 +33,12 @@ app.use(logger);
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
+
+// File uploading
+app.use(fileupload());
+
+// Set static folder 
+app.use(express.static(path.join(__dirname, 'public')));
 
 //  MOUNT routers
 app.use('/api/v1/startups', startups);

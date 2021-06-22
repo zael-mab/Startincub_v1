@@ -92,7 +92,12 @@ const StartupSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
+
+
 
 // Create Startup slug from the name
 // arrow function handle scoop defferently
@@ -121,6 +126,21 @@ StartupSchema.pre('save', async function(next) {
     // Do not save address in DB
     this.address = undefined;
     next();
+});
+
+// Cascade delte courses when a startups is deleted
+StartupSchema.pre('remove', async function(next) {
+    console.log(`Courses bieng removed from startup ${this._id}`);
+    await this.model('Course').deleteMany({ startup: this._id });
+    next();
+});
+
+//  Reverse populate with virtuals
+StartupSchema.virtual('courses', {
+    ref: 'Course',
+    localField: '_id',
+    foreignField: 'startup',
+    justOne: false
 });
 
 module.exports = mongoose.model('Startup', StartupSchema);

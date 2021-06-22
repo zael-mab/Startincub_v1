@@ -5,12 +5,21 @@ const {
     createStartup,
     updateStartup,
     deleteStartup,
-    getStartupsInRadius
+    getStartupsInRadius,
+    StartupPhotoUpload
 } = require('../controllers/startups');
+
+// Include other resource routers
+const courseRouter = require('./courses');
 
 const router = express.Router();
 
+// Re-route into other resourse routers
+router.use('/:startupId/courses', courseRouter);
+
 router.route('/redius/:zipcode/:distance').get(getStartupsInRadius);
+
+router.route('/:id/photo').put(StartupPhotoUpload);
 
 router.route('/')
     .get(getStartups)

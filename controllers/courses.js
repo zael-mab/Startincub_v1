@@ -1,28 +1,113 @@
 const Course = require('../models/Course');
+const Startup = require('../models/Startups');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 
 // @desc    Get courses
 // @route   GET /api/v1/courses
-// @route   GET /api/1/courses/:startupId/course
+// @route   GET /api/v1/startups/:startupId/course
 //@access   Public
 exports.getCourses = asyncHandler(async(req, res, next) => {
     let query;
 
     if (req.params.startupId) {
         query = Course.find({
-            Startup: req.params.startupId
+            startup: req.params.startupId
         });
+        console.log(req.params.startupId);
     } else {
-        query = Course.find();
+        query = Course.find().populate({
+            path: 'startup',
+            select: 'name description'
+        });
     }
-
+    // console.log(query);
     const courses = await query;
-
 
     res.status(200).json({
         success: true,
         count: courses.length,
         data: courses
+    });
+});
+
+
+// @desc    Get course
+// @route   GET /api/v1/courses/:id
+//@access   Public
+exports.getCourse = asyncHandler(async(req, res, next) => {
+    const course = await Course.findById(req.params.id).populate({
+        path: 'startup',
+        select: 'name description'
+    });
+
+    if (!course) {
+        return (next(new ErrorResponse(`No course with the id of ${req.params.id}`), 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        data: course
+    });
+});
+
+// @desc    Add courses
+// @route   POST /api/v1/startups/:startupId/courses
+//@access   Private
+exports.addCourse = asyncHandler(async(req, res, next) => {
+    req.body.startup = req.params.startupId;
+
+    const startup = await Startup.findById(req.params.startupId);
+
+    if (!startup) {
+        return (next(new ErrorResponse(`No startup with the id of ${req.params.startupId}`), 404));
+    }
+
+    const course = await Course.create(req.body);
+
+    res.status(200).json({
+        success: true,
+        data: course
+    });
+});
+
+
+// @desc    Update courses
+// @route   PUT /api/v1/courses/:id
+//@access   Private
+exports.updateCourse = asyncHandler(async(req, res, next) => {
+    let course = await Course.findById(req.params.id);
+
+    if (!course) {
+        return (next(new ErrorResponse(`No course with the id of ${req.params.id}`), 404));
+    }
+
+    course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+    });
+
+    res.status(200).json({
+        success: true,
+        data: course
+    });
+});
+
+
+// @desc    Delete courses
+// @route   DELETE /api/v1/courses/:id
+//@access   Private
+exports.deleteCourse = asyncHandler(async(req, res, next) => {
+    let course = await Course.findById(req.params.id);
+    console.log(req.params.id);
+    if (!course) {
+        return (next(new ErrorResponse(`No course with the id of ${req.params.id}`), 404));
+    }
+
+    await course.remove();
+
+    res.status(200).json({
+        success: true,
+        data: []
     });
 });
