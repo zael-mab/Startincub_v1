@@ -15,6 +15,7 @@ const errorHandler = require('./midlleware/errors');
 // Route files
 const startups = require('./routes/startups');
 const courses = require('./routes/courses');
+const auth = require('./routes/auth');
 
 // load env vars
 dotenv.config({ path: './config/config.env' });
@@ -34,7 +35,7 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// File uploading 
+// File uploading  
 app.use(fileupload());
 
 // Set static folder 
@@ -43,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //  MOUNT routers
 app.use('/api/v1/startups', startups);
 app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
 
 
 app.use(errorHandler);
