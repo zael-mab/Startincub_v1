@@ -9,6 +9,10 @@ const {
     StartupPhotoUpload
 } = require('../controllers/startups');
 
+
+const Startup = require('../models/Startups');
+const advencedResults = require('../midlleware/advencedResults');
+
 // Include other resource routers
 const courseRouter = require('./courses');
 
@@ -22,7 +26,7 @@ router.route('/redius/:zipcode/:distance').get(getStartupsInRadius);
 router.route('/:id/photo').put(StartupPhotoUpload);
 
 router.route('/')
-    .get(getStartups)
+    .get(advencedResults(Startup, 'courses'), getStartups)
     .post(createStartup);
 
 router.route('/:id')

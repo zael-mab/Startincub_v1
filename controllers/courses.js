@@ -8,27 +8,21 @@ const asyncHandler = require('../midlleware/async');
 // @route   GET /api/v1/startups/:startupId/course
 //@access   Public
 exports.getCourses = asyncHandler(async(req, res, next) => {
-    let query;
 
     if (req.params.startupId) {
-        query = Course.find({
+        const courses = await Course.find({
             startup: req.params.startupId
         });
-        console.log(req.params.startupId);
-    } else {
-        query = Course.find().populate({
-            path: 'startup',
-            select: 'name description'
+        return res.status(200).json({
+            success: true,
+            count: courses.length,
+            data: courses
         });
+        // console.log(req.params.startupId);
+    } else {
+        res.status(200).json(res.advencedResults);
     }
-    // console.log(query);
-    const courses = await query;
 
-    res.status(200).json({
-        success: true,
-        count: courses.length,
-        data: courses
-    });
 });
 
 
