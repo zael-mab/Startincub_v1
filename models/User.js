@@ -1,4 +1,6 @@
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -15,7 +17,7 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'publisher'],
+        enum: ['user', 'mentor'],
         default: 'user'
     },
     password: {
@@ -31,5 +33,23 @@ const UserSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+//  Encrypt password  using  bcrypt
+UserSchema.pre('save', async function(next) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
+
+//  Sign JWT and return
+UserSchema.methods.getSignedJwtToken = function() {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRE
+    });
+};
+
+// Match user entred pasword to hashed password in database
+UserSchema.methods.matchPassword = async function(entredPassword) {
+    return await bcrypt.compare(entredPassword, this.password);
+}
 
 module.exports = mongoose.model('User', UserSchema);
