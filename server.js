@@ -11,7 +11,7 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 
 const errorHandler = require('./midlleware/errors');
-
+const cookieParser = require('cookie-parser');
 // Route files
 const startups = require('./routes/startups');
 const courses = require('./routes/courses');
@@ -27,6 +27,10 @@ const app = express();
 
 // Body paser 
 app.use(express.json());
+
+// Cookie parser
+// app.use(cookieParser);
+
 
 app.use(logger);
 
