@@ -6,18 +6,20 @@ const advencedResults = require('../midlleware/advencedResults');
 
 const router = express.Router({ mergeParams: true });
 
+const { protect } = require('../midlleware/auth');
+
 router
     .route('/')
     .get(advencedResults(Course, {
         path: 'startup',
         select: 'name description'
     }), getCourses)
-    .post(addCourse);
+    .post(protect, addCourse);
 
 router
     .route('/:id')
     .get(getCourse)
-    .put(updateCourse)
-    .delete(deleteCourse);
+    .put(protect, updateCourse)
+    .delete(protect, deleteCourse);
 
 module.exports = router;

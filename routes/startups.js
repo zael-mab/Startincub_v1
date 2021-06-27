@@ -18,20 +18,21 @@ const courseRouter = require('./courses');
 
 const router = express.Router();
 
+const { protect } = require('../midlleware/auth');
 // Re-route into other resourse routers
 router.use('/:startupId/courses', courseRouter);
 
 router.route('/redius/:zipcode/:distance').get(getStartupsInRadius);
 
-router.route('/:id/photo').put(StartupPhotoUpload);
+router.route('/:id/photo').put(protect, StartupPhotoUpload);
 
 router.route('/')
     .get(advencedResults(Startup, 'courses'), getStartups)
-    .post(createStartup);
+    .post(protect, createStartup);
 
 router.route('/:id')
     .get(getStartup)
-    .put(updateStartup)
-    .delete(deleteStartup);
+    .put(protect, updateStartup)
+    .delete(protect, deleteStartup);
 
 module.exports = router;
