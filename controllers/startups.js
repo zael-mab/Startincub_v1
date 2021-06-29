@@ -29,7 +29,18 @@ exports.getStartup = asyncHandler(async(req, res, next) => {
 // @oute    POST /api/v1/Startups/
 // @access  Private
 exports.createStartup = asyncHandler(async(req, res, next) => {
+    // Add user to req.body
+    req.body.user = req.user.id;
+
+    // check for  published Startup
+    const publishedStartup = await Startup.findOne({ user: req.user.id });
+    // If the user is not an admin, they can only add one Startup
+    if (publishedStartup && req.user.role !== 'admin') {
+        return next(new ErrorResponse(`The user with ID >${req.user.id}< and the name >${req.user.name}< has already published a startup`, 400));
+    }
+
     const startup = await Startup.create(req.body);
+    console.log(req.user.name);
 
     res.status(201).json({
         success: true,

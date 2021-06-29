@@ -24,15 +24,15 @@ router.use('/:startupId/courses', courseRouter);
 
 router.route('/redius/:zipcode/:distance').get(getStartupsInRadius);
 
-router.route('/:id/photo').put(protect, authorize('user'), StartupPhotoUpload);
+router.route('/:id/photo').put(protect, authorize('user', 'admin'), StartupPhotoUpload);
 
 router.route('/')
     .get(advencedResults(Startup, 'courses'), getStartups)
-    .post(protect, authorize('user'), createStartup);
+    .post(protect, authorize('user', 'admin'), createStartup);
 
 router.route('/:id')
     .get(getStartup)
-    .put(protect, authorize('user'), updateStartup)
-    .delete(protect, authorize('user'), deleteStartup);
+    .put(protect, authorize('user', 'admin'), updateStartup)
+    .delete(protect, authorize('user', 'admin'), deleteStartup);
 
 module.exports = router;
