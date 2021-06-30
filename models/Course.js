@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-//*** change the Schema and get a relation with the mentor Users
+//*** change the Schema and get a relation with the mentor Users and delete the relation between startups and courses
 
 const CourseSchema = new mongoose.Schema({
     title: {
