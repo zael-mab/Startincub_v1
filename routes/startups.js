@@ -20,11 +20,12 @@ const router = express.Router();
 
 const { protect, authorize } = require('../midlleware/auth');
 // Re-route into other resourse routers
-router.use('/:startupId/courses', courseRouter);
+// router.use('/:startupId/courses', courseRouter);
 
 router.route('/redius/:zipcode/:distance').get(getStartupsInRadius);
 
-router.route('/:id/photo').put(protect, authorize('user', 'admin'), StartupPhotoUpload);
+router.route('/:id/photo')
+    .put(protect, authorize('user', 'admin'), StartupPhotoUpload);
 
 router.route('/')
     .get(advencedResults(Startup, 'courses'), getStartups)

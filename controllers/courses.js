@@ -18,7 +18,6 @@ exports.getCourses = asyncHandler(async(req, res, next) => {
             count: courses.length,
             data: courses
         });
-        // console.log(req.params.startupId);
     } else {
         res.status(200).json(res.advencedResults);
     }
@@ -50,11 +49,17 @@ exports.getCourse = asyncHandler(async(req, res, next) => {
 //@access   Private
 exports.addCourse = asyncHandler(async(req, res, next) => {
     req.body.startup = req.params.startupId;
+    req.body.user = req.user.id;
 
     const startup = await Startup.findById(req.params.startupId);
 
     if (!startup) {
         return (next(new ErrorResponse(`No startup with the id of ${req.params.startupId}`), 404));
+    }
+
+    // Make sure user Startup owner
+    if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next(new ErrorResponse(`the user ${req.user.id} is not allowed to create Courses`, 401));
     }
 
     const course = await Course.create(req.body);
@@ -74,6 +79,10 @@ exports.updateCourse = asyncHandler(async(req, res, next) => {
 
     if (!course) {
         return (next(new ErrorResponse(`No course with the id of ${req.params.id}`), 404));
+    }
+
+    if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next(new ErrorResponse(`the user ${req.user.id} is not allowed to Update this Course`, 401));
     }
 
     course = await Course.findByIdAndUpdate(req.params.id, req.body, {
@@ -96,6 +105,11 @@ exports.deleteCourse = asyncHandler(async(req, res, next) => {
     console.log(req.params.id);
     if (!course) {
         return (next(new ErrorResponse(`No course with the id of ${req.params.id}`), 404));
+    }
+
+
+    if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next(new ErrorResponse(`the user ${req.user.id} is not allowed to delete this Course`, 401));
     }
 
     await course.remove();

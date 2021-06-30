@@ -78,7 +78,7 @@ const StartupSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    gradeRAting: {
+    gradeRating: {
         // required: true,
         type: Number,
         min: [0, 'Rating must be at least 0'],

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+
+//*** change the Schema and get a relation with the mentor Users
+
 const CourseSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -22,6 +25,11 @@ const CourseSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Startup',
         required: true
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        require: true
     }
 });
 

@@ -34,6 +34,7 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
 
     // check for  published Startup
     const publishedStartup = await Startup.findOne({ user: req.user.id });
+
     // If the user is not an admin, they can only add one Startup
     if (publishedStartup && req.user.role !== 'admin') {
         return next(new ErrorResponse(`The user with ID >${req.user.id}< and the name >${req.user.name}< has already published a startup`, 400));
@@ -53,12 +54,22 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
 // @oute    PUT /api/v1/Startups/:id
 // @access  Private
 exports.updateStartup = asyncHandler(async(req, res, next) => {
-    const startup = await Startup.findByIdAndUpdate(req.params.id, req.body, {
+
+    let startup = await Startup.findById(req.params.id);
+
+    if (!startup)
+        return next(new ErrorResponse(`Startup not found with id of ${req.params.id}`), 404);
+
+    // Make sure user is startup owner
+    if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next(new ErrorResponse(`User >${req.user.id}< is not autorized to update this Startup`), 401);
+    }
+
+    startup = await Startup.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
     });
-    if (!startup)
-        return next(new ErrorResponse(`Startup not found with id of ${req.params.id}`), 404);
+
     res.status(200).json({ succes: true, ddata: startup });
 });
 
@@ -67,12 +78,21 @@ exports.updateStartup = asyncHandler(async(req, res, next) => {
 // @oute    DELETE /api/v1/Startups/:id
 // @access  Private
 exports.deleteStartup = asyncHandler(async(req, res, next) => {
+
     const startup = await Startup.findById(req.params.id);
-    if (!startup)
+
+    if (!startup) {
         return next(
             new ErrorResponse(`Startup not found with id of ${req.params.id}`),
             404);
+    }
+    // Make sure user is Startup owner.
+    if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next(new ErrorResponse(`User >${req.user.id}< is not autorized to delete this Startup`), 401);
+    }
+
     startup.remove();
+
     res.status(200).json({ success: true, data: {} });
 });
 
@@ -126,11 +146,21 @@ exports.getStartupsInRadius = asyncHandler(async(req, res, next) => {
 // @oute    PUT /api/v1/Startups/:id/photo
 // @access  Private
 exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
+
     const startup = await Startup.findById(req.params.id);
-    if (!startup)
+
+    if (!startup) {
         return next(
             new ErrorResponse(`Startup not found with id of ${req.params.id}`),
             404);
+    }
+
+    // Make sure user is Startup Owner
+    console.log(req.user.id);
+    if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
+        return next(new ErrorResponse(`User >${req.user.id}< is not autorized to update this Startup`), 401);
+    }
+
     if (!req.files) {
         return (next(new ErrorResponse(`Please upload a file`, 400)));
     }
