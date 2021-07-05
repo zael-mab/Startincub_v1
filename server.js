@@ -1,7 +1,6 @@
 const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
-// require('dotenv').config({ path: '/custom/path/to/.env' })
 const logger = require('./midlleware/logger');
 
 const fileupload = require('express-fileupload');
@@ -12,10 +11,12 @@ const connectDB = require('./config/db');
 
 const errorHandler = require('./midlleware/errors');
 const cookieParser = require('cookie-parser');
+
 // Route files
 const startups = require('./routes/startups');
 const courses = require('./routes/courses');
 const auth = require('./routes/auth');
+const users = require('./routes/users');
 
 // load env vars
 dotenv.config({ path: './config/config.env' });
@@ -30,7 +31,6 @@ app.use(express.json());
 
 // Cookie parser
 // app.use(cookieParser);
-
 
 app.use(logger);
 
@@ -49,6 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/v1/startups', startups);
 app.use('/api/v1/courses', courses);
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/users', users);
 
 
 app.use(errorHandler);
@@ -64,7 +65,9 @@ const server = app.listen(
 
 // Hndle unhandledpromise rejections
 process.on('unhandledRejection', (err, promise) => {
+
     console.log(`Error: ${err.message}`.red);
+
     // close server & exit process
     server.close(() => process.exit(1));
 });
