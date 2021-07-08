@@ -1,7 +1,8 @@
+const ErrorResponse = require("../utils/errorResponse");
+
 const advencedResults = (model, populate) => async(req, res, next) => {
 
     let query;
-
     //  Copy req.query
     const reqQuery = {...req.query };
 
@@ -11,9 +12,12 @@ const advencedResults = (model, populate) => async(req, res, next) => {
     // Lopp over removeField and delete them from reqQuery
     removeFields.forEach(param => delete reqQuery[param]);
 
-    // console.log(reqQuery);
+    console.log(req.query);
     // Create query string
     let queryStr = JSON.stringify(reqQuery);
+    if (!reqQuery) {
+        return next(new ErrorResponse('Error !!!', 404));
+    }
 
     //  Create operators ($gt, $gte, etc )
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
@@ -32,7 +36,6 @@ const advencedResults = (model, populate) => async(req, res, next) => {
         const sortBy = req.query.sort.split(',').join(' ');
         query = query.sort(sortBy);
     } else {
-
         // *** if theres a startups that have the same create date the pages have a problem in listing ***
         query = query.sort('-createdAt');
     }

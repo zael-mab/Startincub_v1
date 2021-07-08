@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
 
-//*** change the Schema and get a relation with the mentor Users and delete the relation between startups and courses
-
 const CourseSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -20,16 +18,6 @@ const CourseSchema = new mongoose.Schema({
     createAt: {
         type: Date,
         default: Date.now
-    },
-    startup: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Startup',
-        required: true
-    },
-    user: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        require: true
     }
 });
 

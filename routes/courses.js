@@ -10,16 +10,13 @@ const { protect, authorize } = require('../midlleware/auth');
 
 router
     .route('/')
-    .get(advencedResults(Course, {
-        path: 'startup',
-        select: 'name description'
-    }), getCourses)
-    .post(protect, authorize('user', 'admin'), addCourse);
+    .get(advencedResults(Course), getCourses)
+    .post(protect, authorize('admin'), addCourse);
 
 router
     .route('/:id')
     .get(getCourse)
-    .put(protect, authorize('user', 'admin'), updateCourse)
-    .delete(protect, authorize('user', 'admin'), deleteCourse);
+    .put(protect, authorize('admin'), updateCourse)
+    .delete(protect, authorize('admin'), deleteCourse);
 
 module.exports = router;

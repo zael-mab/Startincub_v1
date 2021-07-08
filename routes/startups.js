@@ -28,7 +28,7 @@ router.route('/:id/photo')
     .put(protect, authorize('user', 'admin'), StartupPhotoUpload);
 
 router.route('/')
-    .get(advencedResults(Startup, 'courses'), getStartups)
+    .get(advencedResults(Startup, { path: 'user', select: 'firstname lastname email' }), getStartups)
     .post(protect, authorize('user', 'admin'), createStartup);
 
 router.route('/:id')

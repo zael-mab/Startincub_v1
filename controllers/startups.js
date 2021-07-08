@@ -10,18 +10,18 @@ const path = require('path');
 exports.getStartups = asyncHandler(async(req, res, next) => {
     const resl = await res.advencedResults;
     res.status(200).json(resl);
-})
+});
 
 // @desc    Get single startup
 // @oute    GET /api/v1/Startups/:id
 // @access  Private
 exports.getStartup = asyncHandler(async(req, res, next) => {
-    const startup = await Startup.findById(req.params.id).populate('courses');
+
+    const startup = await Startup.findById(req.params.id).populate({ path: 'user', select: 'firstname lastname email' });
 
     if (!startup) {
         return next(new ErrorResponse(`Startup not found with id of ${req.params.id}`), 404);
     }
-
     res.status(200).json({ success: true, data: startup });
 });
 
@@ -31,17 +31,18 @@ exports.getStartup = asyncHandler(async(req, res, next) => {
 exports.createStartup = asyncHandler(async(req, res, next) => {
     // Add user to req.body
     req.body.user = req.user.id;
+    console.log(req.user.id);
 
     // check for  published Startup
     const publishedStartup = await Startup.findOne({ user: req.user.id });
 
     // If the user is not an admin, they can only add one Startup
     if (publishedStartup && req.user.role !== 'admin') {
-        return next(new ErrorResponse(`The user with ID >${req.user.id}< and the name >${req.user.name}< has already published a startup`, 400));
+        return next(new ErrorResponse(`The user with ID >${req.user.id}< and the name >${req.user.firstname}< has already published a startup`, 400));
     }
 
     const startup = await Startup.create(req.body);
-    console.log(req.user.name);
+    console.log(req.user.firstname);
 
     res.status(201).json({
         success: true,

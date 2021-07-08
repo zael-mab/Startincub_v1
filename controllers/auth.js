@@ -10,11 +10,20 @@ const crypto = require('crypto');
 // @oute    POST /api/v1/auth/regster
 // @access  Public
 exports.register = asyncHandler(async(req, res, next) => {
-    const { name, email, password, role } = req.body;
+    const { firstname, lastname, phone, email, password, role } = req.body;
+
+    const dupUser = await User.findOne({
+        email: req.body.email
+    });
+    if (dupUser) {
+        return next(new ErrorResponse(`Email >${dupUser.email}<already used`, 401));
+    }
 
     // Create user
     const user = await User.create({
-        name,
+        firstname,
+        lastname,
+        phone,
         email,
         password,
         role
