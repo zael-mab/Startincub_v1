@@ -10,7 +10,7 @@ const crypto = require('crypto');
 // @oute    POST /api/v1/auth/regster
 // @access  Public
 exports.register = asyncHandler(async(req, res, next) => {
-    const { firstname, lastname, phone, email, password, role } = req.body;
+    const { firstname, lastname, phone, email, password, role, mentoring } = req.body;
 
     const dupUser = await User.findOne({
         email: req.body.email
@@ -26,6 +26,7 @@ exports.register = asyncHandler(async(req, res, next) => {
         phone,
         email,
         password,
+        mentoring,
         role
     });
 

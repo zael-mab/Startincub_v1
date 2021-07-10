@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Startup = require('../models/Startups');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const advencedResults = require('../midlleware/advencedResults');
@@ -60,5 +61,30 @@ exports.deleteUser = asyncHandler(async(req, res, next) => {
     res.status(200).json({
         success: true,
         data: {}
+    });
+});
+
+
+// @desc    Get startups to evaluate
+// @oute    GET /api/v1/auth/users/startups
+// @access  Public/Admin
+exports.getStartupsToRate = asyncHandler(async(req, res, next) => {
+    const user = await User.findById(req.user.id);
+    // console.log(user);
+
+    let startups = [];
+    for (let i = 1; i < 6; i++) {
+        let holder = 't_' + i.toString(10);
+        // console.log(user.strtup[holder]);
+        const tmp = await Startup.findById(user.strtup[holder]);
+        if (tmp)
+            startups.push(tmp);
+
+    }
+    // console.log(startups);
+
+    res.status(200).json({
+        success: true,
+        data: startups
     });
 });

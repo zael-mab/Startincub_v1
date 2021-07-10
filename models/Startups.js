@@ -82,7 +82,7 @@ const StartupSchema = new mongoose.Schema({
             // required: true,
             type: Number,
             min: [0, 'Rating must be at least 0'],
-            max: [10, 'Rating must can not be more than 10']
+            max: [5, 'Rating must can not be more than 5']
         },
         photo: {
             type: String,
@@ -96,6 +96,38 @@ const StartupSchema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: 'User',
             require: true
+        },
+        mentor: {
+            m_1: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+                require: true
+                    // select: false
+            },
+            m_2: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+                // select: false,
+                require: true
+            },
+            m_3: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+                // select: false,
+                require: true
+            },
+            m_4: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+                // select: false,
+                require: true
+            },
+            m_5: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+                // select: false,
+                require: true
+            }
         }
     }
     // {

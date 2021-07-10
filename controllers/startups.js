@@ -1,4 +1,5 @@
 const Startup = require('../models/Startups');
+const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const geocoder = require('../utils/geocoder');
@@ -31,19 +32,41 @@ exports.getStartup = asyncHandler(async(req, res, next) => {
 exports.createStartup = asyncHandler(async(req, res, next) => {
     // Add user to req.body
     req.body.user = req.user.id;
-    console.log(req.user.id);
-
     // check for  published Startup
     const publishedStartup = await Startup.findOne({ user: req.user.id });
 
     // If the user is not an admin, they can only add one Startup
     if (publishedStartup && req.user.role !== 'admin') {
-        return next(new ErrorResponse(`The user with ID >${req.user.id}< and the name >${req.user.firstname}< has already published a startup`, 400));
+        return next(new ErrorResponse(`The user with ID > ${ req.user.id } < and the name > ${ req.user.firstname } < has already published a startup `, 400));
     }
 
-    const startup = await Startup.create(req.body);
-    console.log(req.user.firstname);
 
+    let user = await User.findOne({
+        role: 'mentor',
+        mentoring: { $gte: 0 },
+        mentoring: { $lt: 5 }
+    });
+    let startup = await Startup.create(req.body);
+    // find a mentor with less than 5 startups to evaluate
+    console.log(user);
+    if (user) {
+        for (let i = 1; i < 6; i++) {
+            let holder = 't_' + i.toString(10);
+            let holder_m = 'm_' + i.toString(10);
+            // console.log(holder);
+            // console.log(user.strtup[holder]);
+            if (!user.strtup[holder]) {
+                user.strtup[holder] = startup.id;
+                // startup.mentor[holder_m] = user.id;
+                user.mentoring += 1;
+                break;
+            }
+        }
+        await user.save();
+    } else {
+        console.log('----no mentor availble---');
+    }
+    console.log(startup.address);
     res.status(201).json({
         success: true,
         msg: 'Create new startup...',
@@ -59,11 +82,11 @@ exports.updateStartup = asyncHandler(async(req, res, next) => {
     let startup = await Startup.findById(req.params.id);
 
     if (!startup)
-        return next(new ErrorResponse(`Startup not found with id of ${req.params.id}`), 404);
+        return next(new ErrorResponse(`Startup not found with id of ${ req.params.id }`), 404);
 
     // Make sure user is startup owner
     if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
-        return next(new ErrorResponse(`User >${req.user.id}< is not autorized to update this Startup`), 401);
+        return next(new ErrorResponse(`User > ${ req.user.id } < is not autorized to update this Startup `), 401);
     }
 
     startup = await Startup.findByIdAndUpdate(req.params.id, req.body, {
@@ -84,12 +107,12 @@ exports.deleteStartup = asyncHandler(async(req, res, next) => {
 
     if (!startup) {
         return next(
-            new ErrorResponse(`Startup not found with id of ${req.params.id}`),
+            new ErrorResponse(`Startup not found with id of ${ req.params.id }`),
             404);
     }
     // Make sure user is Startup owner.
     if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
-        return next(new ErrorResponse(`User >${req.user.id}< is not autorized to delete this Startup`), 401);
+        return next(new ErrorResponse(`User > ${ req.user.id } < is not autorized to delete this Startup `), 401);
     }
 
     startup.remove();
@@ -114,7 +137,7 @@ exports.getStartupsInRadius = asyncHandler(async(req, res, next) => {
 
     //  *** Need more specifications , the zip code is not accurate *** 
     const p = loc.map((place, i) => {
-        console.log(`${place.countryCode} ===> ${i}`);
+        console.log(`${ place.countryCode } === > $ { i }`);
     });
 
     const lat = loc[i - 1].latitude;
@@ -159,28 +182,28 @@ exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
     // Make sure user is Startup Owner
     console.log(req.user.id);
     if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
-        return next(new ErrorResponse(`User >${req.user.id}< is not autorized to update this Startup`), 401);
+        return next(new ErrorResponse(`User > ${req.user.id} < is not autorized to update this Startup `), 401);
     }
 
     if (!req.files) {
-        return (next(new ErrorResponse(`Please upload a file`, 400)));
+        return (next(new ErrorResponse(`Please upload a file `, 400)));
     }
 
     const file = req.files.file;
 
     // Make sure the image is a photo
     if (!file.mimetype.startsWith('image')) {
-        return (next(new ErrorResponse(`Please upload an image file`, 400)));
+        return (next(new ErrorResponse(`Please upload an image file `, 400)));
     }
 
     // Check filesize
     if (file.size > process.env.MAX_FILE_UPLOAD) {
-        return (next(new ErrorResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`, 400)));
+        return (next(new ErrorResponse(`Please upload an image less than ${ process.env.MAX_FILE_UPLOAD }`, 400)));
     }
     // Create custom filename
-    file.name = `photo_${startup._id}${path.parse(file.name).ext}`;
+    file.name = `photo_${ startup._id} ${ path.parse(file.name).ext }`;
 
-    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+    file.mv(`${ process.env.FILE_UPLOAD_PATH }/${file.name}`, async err => {
         if (err) {
             console.error(err);
             return (next(new ErrorResponse(`Problem with file upload`, 500)));

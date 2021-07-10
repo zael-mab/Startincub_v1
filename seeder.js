@@ -32,8 +32,8 @@ const users = JSON.parse(fs.readFileSync(`${__dirname}/_data/users.json`, 'utf-8
 const importData = async() => {
     try {
         // await Startup.create(startups);
-        await Course.create(courses);
-        // await User.create(users);
+        // await Course.create(courses);
+        await User.create(users);
 
         console.log('Data Imported...'.green.inverse);
         process.exit();
@@ -46,7 +46,7 @@ const importData = async() => {
 const deleteData = async() => {
     try {
         await Startup.deleteMany();
-        await Course.deleteMany();
+        // await Course.deleteMany();
         await User.deleteMany();
 
         console.log('Data Destroyed...'.red.inverse);

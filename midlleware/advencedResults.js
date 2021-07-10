@@ -15,9 +15,9 @@ const advencedResults = (model, populate) => async(req, res, next) => {
     console.log(req.query);
     // Create query string
     let queryStr = JSON.stringify(reqQuery);
-    if (!reqQuery) {
-        return next(new ErrorResponse('Error !!!', 404));
-    }
+    // if (!reqQuery) {
+    //     return next(new ErrorResponse('Error !!!', 404));
+    // }
 
     //  Create operators ($gt, $gte, etc )
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
@@ -78,7 +78,7 @@ const advencedResults = (model, populate) => async(req, res, next) => {
             pagination,
             data: results
         }
-        // console.log(res.advencedResults);
+        // console.log(results);
     next();
 };
 

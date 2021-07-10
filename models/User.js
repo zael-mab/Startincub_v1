@@ -40,6 +40,65 @@ const UserSchema = new mongoose.Schema({
         minlength: 6,
         select: false
     },
+    mentoring: {
+        type: Number,
+        default: 0,
+        min: [0, 'must be at least 0'],
+        max: [5, 'more then 5']
+
+    },
+    // strtup1: {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: 'Startup',
+    //     require: true
+    // },
+    // strtup2: {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: 'Startup',
+    //     require: true
+    // },
+    // strtup3: {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: 'Startup',
+    //     require: true
+    // },
+    // strtup4: {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: 'Startup',
+    //     require: true
+    // },
+    // strtup4: {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: 'Startup',
+    //     require: true
+    // },
+    strtup: {
+        t_1: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Startup',
+            require: true
+        },
+        t_2: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Startup',
+            require: true
+        },
+        t_3: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Startup',
+            require: true
+        },
+        t_4: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Startup',
+            require: true
+        },
+        t_5: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Startup',
+            require: true
+        }
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     createdAt: {

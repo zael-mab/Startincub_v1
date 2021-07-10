@@ -1,91 +1,120 @@
 [{
-        "name": "Admin Account",
+        "firstname": "Admin ",
+        "lastname": " Account",
         "email": "admin@gmail.com",
         "role": "user",
+        "phone": "21903123456",
         "password": "123456"
     },
     {
-        "name": "mentor Account",
+        "firstname": "mentor ",
+        "lastname": " Account",
         "email": "mentor@gmail.com",
+        "mentoring": 0,
+        "phone": "21903123456",
         "role": "mentor",
         "password": "123456"
     },
     {
-        "name": "User Account",
+        "firstname": " Account",
+        "lastname": "User ",
         "email": "user@gmail.com",
         "role": "user",
+        "phone": "21903123456",
         "password": "123456"
     },
     {
-        "name": "John Doe",
+        "firstname": " Doe",
+        "lastname": "John",
         "email": "john@gmail.com",
         "role": "mentor",
+        "phone": "21903123456",
+        "mentoring": 0,
         "password": "123456"
     },
     {
-        "name": "Kevin Smith",
+        "firstname": "Kevin ",
+        "lastname": " Smith",
         "email": "kevin@gmail.com",
+        "mentoring": 0,
+        "phone": "21903123456",
         "role": "mentor",
         "password": "123456"
     },
     {
-        "name": "Mary Williams",
+        "firstname": "Mary",
+        "lastname": "Williams",
         "email": "mary@gmail.com",
+        "phone": "21903123456",
+        "mentoring": 0,
         "role": "mentor",
         "password": "123456"
     },
     {
-        "name": "Sasha Ryan",
+        "firstname": "Sasha ",
+        "lastname": " Ryan",
         "email": "sasha@gmail.com",
+        "mentoring": 0,
+        "phone": "21903123456",
         "role": "mentor",
         "password": "123456"
     },
     {
-        "name": "Greg Harris",
+        "firstname": "Harris",
+        "lastname": "Greg ",
         "email": "greg@gmail.com",
+        "phone": "21903123456",
         "role": "user",
         "password": "123456"
     },
     {
-        "name": "Derek Glover",
+        "firstname": "Derek Glover",
+        "lastname": "Derek ",
         "email": "derek@gmail.com",
+        "phone": "21903123456",
         "role": "user",
         "password": "123456"
     },
     {
-        "name": "Stephanie Hanson",
+        "lastname": " Hanson",
+        "firstname": "Stephanie Hanson",
         "email": "steph@gmail.com",
         "role": "user",
+        "phone": "21903123456",
         "password": "123456"
     },
     {
-        "name": "Jerry Wiliams",
-        "email": "jerry@gmail.com",
-        "role": "user",
-        "password": "123456"
-    },
-    {
-        "name": "Maggie Johnson",
+        "firstname": " Johnson",
+        "lastname": "Maggie Johnson",
+        "phone": "21903123456",
         "email": "maggie@gmail.com",
         "role": "user",
         "password": "123456"
     },
     {
-        "name": "Barry Dickens",
+        "firstname": "Dickens",
+        "lastname": "Barry Dickens",
         "email": "barry@gmail.com",
+        "phone": "21903123456",
         "role": "user",
         "password": "123456"
     },
     {
-        "name": "Ryan Bolin",
+        "firstname": "Ryan Bolin",
+        "lastname": "Bolin",
         "email": "ryan@gmail.com",
-        "role": "user",
+        "mentoring": 0,
+        "phone": "21903123456",
+        "role": "mentor",
         "password": "123456"
     },
     {
-        "name": "Sara Kensing",
+        "lastname": "Sara Kensing",
+        "firstname": " Kensing",
         "email": "sara@gmail.com",
-        "role": "user",
+        "phone": "21903123456",
+        "mentoring": 0,
+        "role": "mentor",
         "password": "123456"
     }
 ]
