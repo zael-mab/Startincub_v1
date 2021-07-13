@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUser, getUsers, createUser, updateUser, deleteUser, getStartupsToRate } = require('../controllers/users');
+const { getUser, getUsers, createUser, updateUser, deleteUser, getStartupsToRate, evaluatStartup } = require('../controllers/users');
 
 const router = express.Router({ mergeParams: true });
 const User = require('../models/User');
@@ -19,6 +19,10 @@ router
 router
     .route('/startups')
     .get(getStartupsToRate);
+
+router
+    .route('/startups/:id')
+    .put(evaluatStartup);
 
 router.route('/:id')
     .get(getUser)

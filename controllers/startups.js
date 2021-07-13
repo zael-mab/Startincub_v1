@@ -40,36 +40,47 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
         return next(new ErrorResponse(`The user with ID > ${ req.user.id } < and the name > ${ req.user.firstname } < has already published a startup `, 400));
     }
 
-
-    let user = await User.findOne({
+    // find mentors that can correct 
+    let user = await User.find({
         role: 'mentor',
         mentoring: { $gte: 0 },
         mentoring: { $lt: 5 }
     });
+    console.log(user.length);
+
+    // check if there is more than 5 mentors
+    let m_length = user.length > 5 ? 5 : user.length;
+    req.body.tocorrect = m_length;
+
+    // Create the Startup
     let startup = await Startup.create(req.body);
+
+    var message = "";
+
     // find a mentor with less than 5 startups to evaluate
-    console.log(user);
-    if (user) {
-        for (let i = 1; i < 6; i++) {
-            let holder = 't_' + i.toString(10);
-            let holder_m = 'm_' + i.toString(10);
-            // console.log(holder);
-            // console.log(user.strtup[holder]);
-            if (!user.strtup[holder]) {
-                user.strtup[holder] = startup.id;
-                // startup.mentor[holder_m] = user.id;
-                user.mentoring += 1;
-                break;
+    if (user.length > 0) {
+
+        // loop on the mentors
+        for (let j = 0; j < m_length; j++) {
+
+            for (let i = 1; i < 6; i++) {
+                let holder = 't_' + i.toString(10);
+
+                if (!user[j].strtup[holder]) {
+                    user[j].strtup[holder] = startup.id;
+                    user[j].mentoring += 1;
+                    console.log(user[j]);
+                    break;
+                }
             }
+            await user[j].save();
         }
-        await user.save();
     } else {
-        console.log('----no mentor availble---');
+        message = '----no mentor availble---';
     }
-    console.log(startup.address);
     res.status(201).json({
         success: true,
-        msg: 'Create new startup...',
+        msg: `Create new startup... ${message}`,
         data: startup
     });
 });
@@ -88,12 +99,15 @@ exports.updateStartup = asyncHandler(async(req, res, next) => {
     if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
         return next(new ErrorResponse(`User > ${ req.user.id } < is not autorized to update this Startup `), 401);
     }
+    delete req.body.mentor;
+    delete req.body.tocorrect;
+    delete req.body.evaluated;
+    delete req.body.finelgrade;
 
     startup = await Startup.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
     });
-
     res.status(200).json({ succes: true, ddata: startup });
 });
 

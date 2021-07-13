@@ -74,12 +74,11 @@ const StartupSchema = new mongoose.Schema({
             type: Boolean,
             default: false
         },
-        evaluated_points: {
+        tocorrect: {
             type: Number,
             default: 0
         },
-        gradeRating: {
-            // required: true,
+        finelgrade: {
             type: Number,
             min: [0, 'Rating must be at least 0'],
             max: [5, 'Rating must can not be more than 5']
@@ -90,7 +89,8 @@ const StartupSchema = new mongoose.Schema({
         },
         createdAt: {
             type: Date,
-            default: Date.now
+            default: Date.now,
+            immutable: true
         },
         user: {
             type: mongoose.Schema.ObjectId,
@@ -99,34 +99,64 @@ const StartupSchema = new mongoose.Schema({
         },
         mentor: {
             m_1: {
-                type: mongoose.Schema.ObjectId,
-                ref: 'User',
-                require: true
-                    // select: false
+                m_id: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: 'User',
+                    require: true
+                },
+                gradeRating: {
+                    type: Number,
+                    min: [0, 'Rating must be at least 0'],
+                    max: [5, 'Rating must can not be more than 5']
+                }
             },
             m_2: {
-                type: mongoose.Schema.ObjectId,
-                ref: 'User',
-                // select: false,
-                require: true
+                m_id: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: 'User',
+                    require: true
+                },
+                gradeRating: {
+                    type: Number,
+                    min: [0, 'Rating must be at least 0'],
+                    max: [5, 'Rating must can not be more than 5']
+                }
             },
             m_3: {
-                type: mongoose.Schema.ObjectId,
-                ref: 'User',
-                // select: false,
-                require: true
+                m_id: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: 'User',
+                    require: true
+                },
+                gradeRating: {
+                    type: Number,
+                    min: [0, 'Rating must be at least 0'],
+                    max: [5, 'Rating must can not be more than 5']
+                }
             },
             m_4: {
-                type: mongoose.Schema.ObjectId,
-                ref: 'User',
-                // select: false,
-                require: true
+                m_id: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: 'User',
+                    require: true
+                },
+                gradeRating: {
+                    type: Number,
+                    min: [0, 'Rating must be at least 0'],
+                    max: [5, 'Rating must can not be more than 5']
+                }
             },
             m_5: {
-                type: mongoose.Schema.ObjectId,
-                ref: 'User',
-                // select: false,
-                require: true
+                m_id: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: 'User',
+                    require: true
+                },
+                gradeRating: {
+                    type: Number,
+                    min: [0, 'Rating must be at least 0'],
+                    max: [5, 'Rating must can not be more than 5']
+                }
             }
         }
     }
@@ -167,6 +197,13 @@ StartupSchema.pre('save', async function(next) {
     next();
 });
 
+
+StartupSchema.pre('save', function(next) {
+    if (this.isModified('createdAt')) {
+        this.invalidate('createdAt');
+    }
+    next();
+});
 // Cascade delte courses when a startups is deleted
 // StartupSchema.pre('remove', async function(next) {
 //     console.log(`Courses bieng removed from startup ${this._id}`);

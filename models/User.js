@@ -23,6 +23,8 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         trim: true,
+        unique: true,
+        lowercase: true,
         required: [true, 'Please add an email'],
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -47,31 +49,6 @@ const UserSchema = new mongoose.Schema({
         max: [5, 'more then 5']
 
     },
-    // strtup1: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: 'Startup',
-    //     require: true
-    // },
-    // strtup2: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: 'Startup',
-    //     require: true
-    // },
-    // strtup3: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: 'Startup',
-    //     require: true
-    // },
-    // strtup4: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: 'Startup',
-    //     require: true
-    // },
-    // strtup4: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: 'Startup',
-    //     require: true
-    // },
     strtup: {
         t_1: {
             type: mongoose.Schema.ObjectId,
@@ -128,7 +105,7 @@ UserSchema.methods.getSignedJwtToken = function() {
 // Match user entred pasword to hashed password in database
 UserSchema.methods.matchPassword = async function(entredPassword) {
     return await bcrypt.compare(entredPassword, this.password);
-}
+};
 
 // Generate and hash password Token
 UserSchema.methods.getResetPasswordToken = function() {
@@ -145,6 +122,14 @@ UserSchema.methods.getResetPasswordToken = function() {
     // set expire
     this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
     return resetToken;
-}
+};
+
+
+// Cascade delete startup when a user(role = user) is deleted
+// StartupSchema.pre('remove', async function(next) {
+//     console.log(`Startup bieng removed from user ${this._id}`);
+//     await this.model('Startups').deleteMany({ user: this._id });
+//     next();
+// });
 
 module.exports = mongoose.model('User', UserSchema);
