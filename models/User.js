@@ -49,7 +49,12 @@ const UserSchema = new mongoose.Schema({
         max: [5, 'more then 5']
 
     },
-    strtup: {
+    startup: {
+        t_0: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Startup',
+            require: true
+        },
         t_1: {
             type: mongoose.Schema.ObjectId,
             ref: 'Startup',
@@ -66,11 +71,6 @@ const UserSchema = new mongoose.Schema({
             require: true
         },
         t_4: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Startup',
-            require: true
-        },
-        t_5: {
             type: mongoose.Schema.ObjectId,
             ref: 'Startup',
             require: true

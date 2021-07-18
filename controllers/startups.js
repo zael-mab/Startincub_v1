@@ -46,7 +46,6 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
         mentoring: { $gte: 0 },
         mentoring: { $lt: 5 }
     });
-    console.log(user.length);
 
     // check if there is more than 5 mentors
     let m_length = user.length > 5 ? 5 : user.length;
@@ -62,19 +61,24 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
 
         // loop on the mentors
         for (let j = 0; j < m_length; j++) {
-
-            for (let i = 1; i < 6; i++) {
+            for (let i = 0; i < 5; i++) {
+                let holder0 = 'm_' + j.toString(10);
                 let holder = 't_' + i.toString(10);
-
-                if (!user[j].strtup[holder]) {
-                    user[j].strtup[holder] = startup.id;
-                    user[j].mentoring += 1;
-                    console.log(user[j]);
+                if (!user[j].startup[holder]) {
+                    user[j].startup[holder] = startup.id;
+                    user[j].mentoring++;
+                    startup.mentor[holder0].m_id = user[j].id;
                     break;
                 }
             }
             await user[j].save();
         }
+
+        // Update mentors id
+        startup = await Startup.findByIdAndUpdate(startup.id, startup, {
+            new: true,
+            runValidators: true
+        });
     } else {
         message = '----no mentor availble---';
     }

@@ -98,6 +98,25 @@ const StartupSchema = new mongoose.Schema({
             require: true
         },
         mentor: {
+            m_0: {
+                m_id: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: 'User',
+                    require: true
+                },
+                gradeRating: {
+                    type: Number,
+                    default: 0
+                },
+                finalGrade: {
+                    type: Boolean,
+                    default: false
+                },
+                description: {
+                    type: String,
+                    require: true
+                }
+            },
             m_1: {
                 m_id: {
                     type: mongoose.Schema.ObjectId,
@@ -106,8 +125,15 @@ const StartupSchema = new mongoose.Schema({
                 },
                 gradeRating: {
                     type: Number,
-                    min: [0, 'Rating must be at least 0'],
-                    max: [5, 'Rating must can not be more than 5']
+                    default: 0
+                },
+                finalGrade: {
+                    type: Boolean,
+                    default: false
+                },
+                description: {
+                    type: String,
+                    require: true
                 }
             },
             m_2: {
@@ -118,8 +144,15 @@ const StartupSchema = new mongoose.Schema({
                 },
                 gradeRating: {
                     type: Number,
-                    min: [0, 'Rating must be at least 0'],
-                    max: [5, 'Rating must can not be more than 5']
+                    default: 0
+                },
+                finalGrade: {
+                    type: Boolean,
+                    default: false
+                },
+                description: {
+                    type: String,
+                    require: true
                 }
             },
             m_3: {
@@ -130,8 +163,15 @@ const StartupSchema = new mongoose.Schema({
                 },
                 gradeRating: {
                     type: Number,
-                    min: [0, 'Rating must be at least 0'],
-                    max: [5, 'Rating must can not be more than 5']
+                    default: 0
+                },
+                finalGrade: {
+                    type: Boolean,
+                    default: false
+                },
+                description: {
+                    type: String,
+                    require: true
                 }
             },
             m_4: {
@@ -142,20 +182,15 @@ const StartupSchema = new mongoose.Schema({
                 },
                 gradeRating: {
                     type: Number,
-                    min: [0, 'Rating must be at least 0'],
-                    max: [5, 'Rating must can not be more than 5']
-                }
-            },
-            m_5: {
-                m_id: {
-                    type: mongoose.Schema.ObjectId,
-                    ref: 'User',
-                    require: true
+                    default: 0
                 },
-                gradeRating: {
-                    type: Number,
-                    min: [0, 'Rating must be at least 0'],
-                    max: [5, 'Rating must can not be more than 5']
+                finalGrade: {
+                    type: Boolean,
+                    default: false
+                },
+                description: {
+                    type: String,
+                    require: true
                 }
             }
         }
