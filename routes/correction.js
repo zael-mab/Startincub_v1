@@ -12,8 +12,12 @@ router.use(protect);
 // router.use(authorize('admin'));
 
 router.route('/')
-    .get(getStartupsToRate);
+    .get(authorize('mentor'), getStartupsToRate);
+
+router.route('/:id')
+    .put(authorize('mentor'), evaluatStartup);
 
 router.route('/:id/:startup')
-    .put(authorize('admin'), addCorrectionForMentor);
+    .post(authorize('admin'), addCorrectionForMentor);
+
 module.exports = router;

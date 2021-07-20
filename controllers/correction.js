@@ -11,7 +11,6 @@ const advencedResults = require('../midlleware/advencedResults');
 exports.getStartupsToRate = asyncHandler(async(req, res, next) => {
     const user = await User.findById(req.user.id);
 
-    console.log('---up here----');
     let startups = [];
     for (let i = 0; i < 5; i++) {
         let holder = 't_' + i.toString(10);
@@ -27,58 +26,15 @@ exports.getStartupsToRate = asyncHandler(async(req, res, next) => {
 });
 
 
-// @desc    Update startups for evaluated points
-// @oute    PUT /api/v1/correction/:id
-// @access  Public/Admin
-exports.evaluatStartup = asyncHandler(async(req, res, next) => {
-    const user = await User.findById(req.user.id);
-    const startups = await Startup.findById(req.params.id);
-    console.log(req.body.gradeRating);
-
-    // NEED MORE DATA ABOUT CORRECTION
-    let x = -1;
-    for (let i = 0; i < 5; i++) {
-        let holder = 't_' + i.toString(10);
-        if (req.params.id == user.startup[holder]) {
-            console.log(`${req.params.id} === ${user.startup[holder]}`);
-            let holder0 = 'm_' + i.toString(10);
-            for (let j = 0; j < 5; j++) {
-                if (!startups.mentor[holder0]) {
-                    req.body.mentor[holder0].m_id = user.id;
-                    req.body.mentor[holder0].gradeRating = req.body.gradeRating;
-                    break;
-                }
-            }
-            // req.body.mentor.m_1.m_id = user.id;
-            x = i;
-            break;
-        }
-    }
-    if (x === -1) {
-        return next(new ErrorResponse(`you're not autorized to correct this startup with id > ${req.params.id}`, 401));
-    }
-    const startup = await Startup.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    });
-    console.log(startup);
-
-    res.status(200).json({
-        success: true,
-        data: user,
-        startup
-    });
-
-});
-
 
 // @desc    Update Mentor with new Startup to correct
-// @route   PUT /api/v1/auth/users/correct/:id/:startup
+// @route   Post /api/v1/auth/users/correct/:id/:startup
 // @access  Public/Admin
 exports.addCorrectionForMentor = asyncHandler(async(req, res, next) => {
 
     let startup = await Startup.findById(req.params.startup);
     let user = await User.findById(req.params.id);
+
     if (!user || !startup) {
         if (!user)
             return next(new ErrorResponse(`the user with id ${req.params.id} not found`, 401));
@@ -87,9 +43,7 @@ exports.addCorrectionForMentor = asyncHandler(async(req, res, next) => {
     }
     // check the Mentor tocorrect startups
     if (user.mentoring > 4) {
-        console.log(user.mentoring);
         return next(new ErrorResponse(`the Mentor with id >${user.id}< can not evaluate this Startup...`, 401));
-
     }
     // check if the startup did not have enough evaluators
     if (startup.tocorrect > 4) {
@@ -100,17 +54,16 @@ exports.addCorrectionForMentor = asyncHandler(async(req, res, next) => {
     for (let i = 0; i < 5; i++) {
         const holder = 't_' + i.toString(10);
         const holder0 = 'm_' + i.toString(10);
+
         // check for duplication in  user.startup
         if (user.startup[holder] == startup.id) {
             return next(new ErrorResponse(`the mentor already have this startup to evaluate`, 401));
         }
         if (!startup.mentor[holder0].m_id && !x) {
             x = holder0;
-            console.log(x);
         }
         if (!user.startup[holder] && !y) {
             y = holder;
-            console.log(y);
         }
         if (x && y) {
             user.startup[y] = startup.id;
@@ -135,4 +88,69 @@ exports.addCorrectionForMentor = asyncHandler(async(req, res, next) => {
         user,
         startup
     });
+});
+
+// @desc    Update startups for evaluated points
+// @oute    PUT /api/v1/correction/:id
+// @access  Public/Admin
+exports.evaluatStartup = asyncHandler(async(req, res, next) => {
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        console.log('----no user with ----');
+    }
+    let startup;
+
+    console.log(req.body.gradeRating);
+    console.log(req.body.finalGrade);
+
+    // NEED MORE DATA ABOUT CORRECTION
+    let x = -1;
+    // ////////////
+    for (let i = 0; i < 5; i++) {
+        let holder = 't_' + i.toString(10);
+
+        if (req.params.id == user.startup[holder]) {
+            console.log(`---mutch--- ${user.startup[holder]}----`.yellow);
+
+            startup = await Startup.findById(req.params.id);
+            if (!startup) {
+                return next(new ErrorResponse(`startup not find with id >${req.params.id}<`, 404));
+            }
+            /////////////////
+            for (let j = 0; j < 5; j++) {
+                let holder0 = 'm_' + j.toString(10);
+
+                if (startup.mentor[holder0].m_id == user.id) {
+                    // console.log(`user=>${user.id} ---- str =>${startup.mentor[holder0].m_id}`);
+                    startup.mentor[holder0].gradeRating = req.body.gradeRating;
+                    startup.mentor[holder0].finalGrade = req.body.finalGrade;
+                    startup.mentor[holder0].description = req.body.description;
+                    i = 6;
+                    startup = await Startup.findByIdAndUpdate(req.params.id, startup, {
+                        new: true,
+                        runValidators: true
+                    });
+                    break;
+                }
+
+            }
+            //     // req.body.mentor.m_1.m_id = user.id;
+            //     x = i;
+            //     break;
+        }
+    }
+
+    // // if (x === -1) {
+    // //     return next(new ErrorResponse(`you're not autorized to correct this startup with id > ${req.params.id}`, 401));
+    // // }
+
+
+    res.status(200).json({
+        success: true,
+        data: user,
+        startup
+    });
+
 });

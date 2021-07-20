@@ -57,7 +57,7 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
     var message = "";
 
     // find a mentor with less than 5 startups to evaluate
-    if (user.length > 0) {
+    if (m_length > 0) {
 
         // loop on the mentors
         for (let j = 0; j < m_length; j++) {
