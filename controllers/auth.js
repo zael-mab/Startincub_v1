@@ -6,6 +6,27 @@ const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 
 
+
+// @desc    check for user
+// @oute    POST /api/v1/auth/check
+// @access  Public
+exports.check = asyncHandler(async(req, res, next) => {
+
+    const dupUser = await User.findOne({
+        email: req.body.email
+    });
+    let data = false;
+    if (dupUser) {
+        data = true;
+    }
+    console.log(data);
+    res.status(200).json({
+        data
+    });
+});
+
+
+
 // @desc    Register user
 // @oute    POST /api/v1/auth/regster
 // @access  Public
@@ -40,7 +61,7 @@ exports.register = asyncHandler(async(req, res, next) => {
 // @access  Public
 exports.login = asyncHandler(async(req, res, next) => {
     const { email, password } = req.body;
-
+    console.log(req.body);
     // Validate email and password
     if (!email || !password) {
         return next(new ErrorResponse('Please provide an email and password', 400));
@@ -51,7 +72,6 @@ exports.login = asyncHandler(async(req, res, next) => {
     if (!user) {
         return next(new ErrorResponse('Invalid credentials', 400));
     }
-
     // check if passord matches
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
@@ -80,7 +100,7 @@ exports.getMe = asyncHandler(async(req, res, next) => {
 // @access  Private
 exports.updateDetails = asyncHandler(async(req, res, next) => {
     const fieldsToUpdate = {
-        name: req.body.name,
+        firstname: req.body.firstname,
         email: req.body.email
     };
 
@@ -88,7 +108,6 @@ exports.updateDetails = asyncHandler(async(req, res, next) => {
         new: true,
         runValidators: true
     });
-    console.log(req.body);
     res.status(200).json({
         success: true,
         data: user

@@ -49,6 +49,11 @@ const UserSchema = new mongoose.Schema({
         max: [5, 'more then 5']
 
     },
+    startupid: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Startup',
+        require: true
+    },
     startup: {
         t_0: {
             type: mongoose.Schema.ObjectId,

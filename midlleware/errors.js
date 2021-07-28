@@ -4,6 +4,11 @@ const errorHandler = (err, req, res, next) => {
     let error = {...err };
     error.message = err.message;
 
+    console.log('---------------'.red);
+    console.log(err);
+    console.log('---------------'.red);
+
+
     console.log(err.stack);
 
     // Log to console for dev

@@ -5,6 +5,8 @@ const logger = require('./midlleware/logger');
 
 const fileupload = require('express-fileupload');
 
+const bodyParser = require('body-parser');
+
 const color = require('colors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
@@ -19,6 +21,8 @@ const auth = require('./routes/auth');
 const users = require('./routes/users');
 const correction = require('./routes/correction');
 
+const cors = require('cors');
+
 // load env vars
 dotenv.config({ path: './config/config.env' });
 
@@ -29,11 +33,20 @@ const app = express();
 
 // Body parser 
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Cookie parser
 // app.use(cookieParser);
 
 app.use(logger);
+app.use(express.json({ limit: '50mb' }));
+
+// adding the CORS header
+app.use(cors({
+    origin: '*'
+        // origin: 'https://www.google.com/'
+}));
 
 //  Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -44,8 +57,8 @@ if (process.env.NODE_ENV === 'development') {
 app.use(fileupload());
 
 // Set static folder 
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/uploads', express.static(path.join(__dirname, 'public')));
+app.use(express.static('uploads'));
 //  MOUNT routers
 app.use('/api/v1/startups', startups);
 app.use('/api/v1/courses', courses);

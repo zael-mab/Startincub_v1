@@ -5,6 +5,29 @@ const asyncHandler = require('../midlleware/async');
 const geocoder = require('../utils/geocoder');
 const path = require('path');
 
+
+
+// @desc    check for Startup name
+// @oute    GET /api/v1/Startups/check
+// @access  Public
+exports.check = asyncHandler(async(req, res, next) => {
+
+    const startup = await Startup.findOne({
+        Sname: req.body.Sname
+    });
+    let data = false;
+    if (startup) {
+        data = true;
+    }
+    console.log(data);
+    res.status(200).json({
+        data
+    });
+});
+
+
+
+
 // @desc    Get all startups
 // @oute    GET /api/v1/Startups
 // @access  Public
@@ -32,6 +55,7 @@ exports.getStartup = asyncHandler(async(req, res, next) => {
 exports.createStartup = asyncHandler(async(req, res, next) => {
     // Add user to req.body
     req.body.user = req.user.id;
+    let ownerUser = await User.findById(req.user.id);
     // check for  published Startup
     const publishedStartup = await Startup.findOne({ user: req.user.id });
 
@@ -53,7 +77,6 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
 
     // Create the Startup
     let startup = await Startup.create(req.body);
-
     var message = "";
 
     // find a mentor with less than 5 startups to evaluate
@@ -82,10 +105,15 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
     } else {
         message = '----no mentor availble---';
     }
+    ownerUser.startupid = startup.id;
+    await User.findByIdAndUpdate(ownerUser.id, ownerUser, {
+        new: true,
+        runValidators: true
+    });
     res.status(201).json({
         success: true,
         msg: `Create new startup... ${message}`,
-        data: startup
+        id: startup.id
     });
 });
 
@@ -104,6 +132,7 @@ exports.updateStartup = asyncHandler(async(req, res, next) => {
         return next(new ErrorResponse(`User > ${ req.user.id } < is not autorized to update this Startup `), 401);
     }
     delete req.body.mentor;
+    delete req.body.form;
     delete req.body.tocorrect;
     delete req.body.evaluated;
     delete req.body.finelgrade;
@@ -128,6 +157,8 @@ exports.deleteStartup = asyncHandler(async(req, res, next) => {
             new ErrorResponse(`Startup not found with id of ${ req.params.id }`),
             404);
     }
+    // NEEED TO DELETE PHOTOS
+
     // Make sure user is Startup owner.
     if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
         return next(new ErrorResponse(`User > ${ req.user.id } < is not autorized to delete this Startup `), 401);
@@ -182,7 +213,18 @@ exports.getStartupsInRadius = asyncHandler(async(req, res, next) => {
     });
 });
 
-
+// @desc    Upload startup
+// @oute    PUT /api/v1/Startups/photo/:photoid
+// @access  Private
+exports.sendPhoto = asyncHandler(async(req, res, next) => {
+    console.log('-----------');
+    let file = `/${process.cwd()}/public/uploads/${req.params.photoid}`;
+    console.log(process.cwd());
+    // res.status(200).json({
+    //     file
+    // });
+    res.status(200).sendFile(file); // Set disposition and send it.
+});
 
 // @desc    Upload startup
 // @oute    PUT /api/v1/Startups/:id/photo
@@ -198,7 +240,6 @@ exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
     }
 
     // Make sure user is Startup Owner
-    console.log(req.user.id);
     if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
         return next(new ErrorResponse(`User > ${req.user.id} < is not autorized to update this Startup `), 401);
     }
@@ -219,7 +260,7 @@ exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
         return (next(new ErrorResponse(`Please upload an image less than ${ process.env.MAX_FILE_UPLOAD }`, 400)));
     }
     // Create custom filename
-    file.name = `photo_${ startup._id} ${ path.parse(file.name).ext }`;
+    file.name = `photo_${ startup._id}${path.parse(file.name).ext }`;
 
     file.mv(`${ process.env.FILE_UPLOAD_PATH }/${file.name}`, async err => {
         if (err) {
@@ -227,7 +268,7 @@ exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
             return (next(new ErrorResponse(`Problem with file upload`, 500)));
         }
 
-        await Startup.findByIdAndUpdate(req.params.id, { photo: file.name });
+        await Startup.findByIdAndUpdate(req.params.id, { logo: file.name });
         res.status(200).json({
             success: true,
             data: file.name

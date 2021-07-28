@@ -6,7 +6,9 @@ const {
     updateStartup,
     deleteStartup,
     getStartupsInRadius,
-    StartupPhotoUpload
+    StartupPhotoUpload,
+    sendPhoto,
+    check
 } = require('../controllers/startups');
 
 
@@ -21,6 +23,13 @@ const router = express.Router();
 const { protect, authorize } = require('../midlleware/auth');
 // Re-route into other resourse routers
 // router.use('/:startupId/courses', courseRouter);
+
+
+router.route('/photo/:photoid')
+    .get(sendPhoto);
+
+router.route('/check')
+    .post(check);
 
 router.route('/redius/:zipcode/:distance').get(getStartupsInRadius);
 
