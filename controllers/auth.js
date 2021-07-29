@@ -64,11 +64,11 @@ exports.login = asyncHandler(async(req, res, next) => {
     const { email, password } = req.body;
     console.log(req.body);
 
-    // for the count of Startup
-    // const resl = await res.advencedResults;
-    // console.log(resl);
-    // const count = await Startup.estimatedDocumentCount();
-    // console.log(count);
+    // for the count of Startups
+    const resl = await res.advencedResults;
+    console.log(resl);
+    const count = await Startup.estimatedDocumentCount();
+    console.log(count);
 
 
     // Validate email and password
