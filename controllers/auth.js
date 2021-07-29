@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Startup = require('../models/Startups');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const geocoder = require('../utils/geocoder');
@@ -62,6 +63,14 @@ exports.register = asyncHandler(async(req, res, next) => {
 exports.login = asyncHandler(async(req, res, next) => {
     const { email, password } = req.body;
     console.log(req.body);
+
+    // for the count of Startup
+    // const resl = await res.advencedResults;
+    // console.log(resl);
+    // const count = await Startup.estimatedDocumentCount();
+    // console.log(count);
+
+
     // Validate email and password
     if (!email || !password) {
         return next(new ErrorResponse('Please provide an email and password', 400));

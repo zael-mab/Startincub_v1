@@ -214,15 +214,10 @@ exports.deleteStartupFromMentor = asyncHandler(async(req, res, next) => {
                 new: true,
                 runValidators: true
             });
-            console.log(`----------${startup.mentor[holder0]}----------`.blue)
             user = await User.findByIdAndUpdate(req.params.id, user, {
                 new: true,
                 runValidators: true
             });
-            console.log(`---------------${user.startup[holder]}----------------------`.red)
-            console.log(j);
-            // console.log(user);
-            // console.log(startup);
             break;
         }
     }
@@ -230,5 +225,90 @@ exports.deleteStartupFromMentor = asyncHandler(async(req, res, next) => {
         success: message,
         user,
         startup
+    });
+});
+
+
+
+// @desc    Delete Startup from mentor
+// @oute    DELETE /api/v1/correction/:startupid
+// @access  Public/Admin
+exports.clearMentor = asyncHandler(async(req, res, next) => {
+    let mentor = await User.findById(req.params.id);
+    if (!mentor) {
+        return next(new ErrorResponse(`Mentor with id >${req.params.id} not found...<`, 404))
+    }
+    // check if the id for a Mentor role user
+    if (mentor.role != 'mentor') {
+        return next(new ErrorResponse(`the id >${req.params.id}< is not for a Mentor`, 401));
+    }
+    let startup;
+
+    // while on the Mentor 
+    for (let i = 0; i < 5; i++) {
+
+        let holder = 't_' + i.toString(10);
+        if (mentor.startup[holder]) {
+            console.log(holder);
+            startup = await Startup.findById(mentor.startup[holder]);
+
+            // delete the id if the sratup does not exist
+            if (!startup) {
+                mentor.startup[holder] = undefined;
+                mentor = await User.findByIdAndUpdate(mentor.id, mentor, {
+                    new: true,
+                    runValidators: true
+                });
+                return next(new ErrorResponse(`Startup not found with id >${mentor.startup[holder]}<`, 404));
+            }
+
+            for (let j = 0; j < 5; j++) {
+                let holder0 = 'm_' + j.toString(10);
+
+                // find the mentor palce on the startup
+                if (startup.mentor[holder0].m_id == mentor.id) {
+                    // Update Mentor
+                    console.log('----------0----------'.blue);
+                    console.log(mentor.startup[holder]);
+                    mentor.startup[holder] = undefined;
+                    mentor = await User.findByIdAndUpdate(mentor.id, mentor, {
+                        new: true,
+                        runValidators: true
+                    });
+                    console.log('----------1----------'.green);
+                    console.log(mentor.startup[holder].m_id);
+                    if (startup.mentor[holder0].finalGrade == false) {
+
+                        // initialize the grade field for the startup
+                        for (let c = 1; c < 25; c++) {
+                            let t = 'db' + c.toString(10);
+                            startup.mentor[holder0][t] = -1;
+                        }
+                        startup.mentor[holder0].m_id = null;
+                        startup.mentor[holder0].total = -1;
+                        startup.mentor[holder0].sr = undefined;
+                        startup.mentor[holder0].fb = undefined;
+                        startup.mentor[holder0].finalGrade = false;
+
+                        // Update Startup
+                        console.log('----------0----------'.blue);
+                        console.log(startup.mentor[holder0]);
+                        startup = await Startup.findByIdAndUpdate(startup.id, startup, {
+                            new: true,
+                            runValidators: true
+                        });
+                        console.log('----------1----------'.green);
+                        console.log(startup.mentor[holder0].m_id);
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+
+            }
+        }
+    }
+    res.status(200).json({
+        success: true
     });
 });

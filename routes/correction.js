@@ -1,7 +1,13 @@
 const express = require('express');
 const Users = require('../models/User');
 const Startups = require('../models/Startups');
-const { getStartupsToRate, evaluatStartup, addCorrectionForMentor, deleteStartupFromMentor } = require('../controllers/correction');
+const {
+    getStartupsToRate,
+    evaluatStartup,
+    addCorrectionForMentor,
+    deleteStartupFromMentor,
+    clearMentor
+} = require('../controllers/correction');
 
 const router = express.Router({ mergeParams: true });
 const advencedResults = require('../midlleware/advencedResults');
@@ -15,7 +21,8 @@ router.route('/')
     .get(authorize('mentor'), getStartupsToRate);
 
 router.route('/:id')
-    .put(authorize('mentor'), evaluatStartup);
+    .put(authorize('mentor'), evaluatStartup)
+    .delete(authorize('admin'), clearMentor);
 
 router.route('/:id/:startupid')
     .post(authorize('admin'), addCorrectionForMentor)

@@ -1,18 +1,43 @@
 const express = require('express');
-const { register, login, getMe, forgotPassword, resetPassword, updateDetails, updatePassword, check } = require('../controllers/auth');
+const {
+    register,
+    login,
+    getMe,
+    forgotPassword,
+    resetPassword,
+    updateDetails,
+    updatePassword,
+    check
+} = require('../controllers/auth');
 
 const router = express.Router();
 
+const advencedResults = require('../midlleware/advencedResults');
+const Startup = require('../models/Startups');
 const { protect } = require('../midlleware/auth');
 
-router.post('/register', register);
-router.post('/check', check);
-router.post('/login', login);
-router.get('/me', protect, getMe);
-router.post('/forgotpassword', forgotPassword);
-router.put('/resetpassword/:resettoken', resetPassword);
-router.put('/updatedetails', protect, updateDetails);
-router.put('/updatepassword', protect, updatePassword);
+router.route('/register')
+    .post(register);
+router.route('/check')
+    .post(check);
+
+router.route('/login')
+    .post(advencedResults(Startup, { path: 'user', select: 'firstname lastname email' }), login);
+
+router.route('/me')
+    .get(protect, getMe);
+
+router.route('/forgotpassword')
+    .post(forgotPassword);
+
+router.route('/resetpassword/:resettoken')
+    .put(resetPassword);
+
+router.route('/updatedetails')
+    .put(protect, updateDetails);
+
+router.route('/updatepassword')
+    .put(protect, updatePassword);
 
 
 module.exports = router;
