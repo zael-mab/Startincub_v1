@@ -4,6 +4,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const geocoder = require('../utils/geocoder');
 const path = require('path');
+const fs = require('fs');
 
 
 
@@ -144,7 +145,6 @@ exports.updateStartup = asyncHandler(async(req, res, next) => {
     res.status(200).json({ succes: true, ddata: startup });
 });
 
-const fs = require('fs');
 // @desc    Delete startup
 // @oute    DELETE /api/v1/Startups/:id
 // @access  Private
@@ -164,12 +164,12 @@ exports.deleteStartup = asyncHandler(async(req, res, next) => {
     }
 
     // delete the photos
-    let file = `/${process.cwd()}/public/uploads/photo_${startup._id}.jpg`;
+    let file = `/${process.cwd()}/public/uploads/${startup.logo}`;
     if (fs.existsSync(file)) {
         console.log('file exist');
 
         try {
-            fs.unlink(file);
+            fs.unlinkSync(file);
             console.log("File is deleted.");
         } catch (err) {
             console.log(err);
@@ -177,13 +177,38 @@ exports.deleteStartup = asyncHandler(async(req, res, next) => {
     }
 
     // delete the link with Mentors
-    // for (start.mentor)
+    for (let i = 0; i < 5; i++) {
+        let holder = 'm_' + i.toString(10);
+        if (startup.mentor[holder].m_id) {
+            console.log(startup.mentor[holder].m_id);
+            let mentor = User.findById(startup.mentor[holder].m_id);
+            if (mentor) {
+                console.log(mentor.startup);
+                // for (let j = 0; j < 5; j++) {
+                // let holder0 = 't_' + j.toString(10);
+                // console.log(mentor.startup);
+                // if (mentor.startup[holder0] == startup.id) {
+                //     mentor.startup[holder0] = null;
+                //     mentor = await User.findByIdAndUpdate(mentor.id, mentor, {
+                //         new: true,
+                //         runValidators: true
+                //     });
+                // console.log(mentor.startup);
+                // break;
+                // }
+                // }
+            }
+        }
+    }
 
 
 
     startup.remove();
 
-    res.status(200).json({ success: true, data: {} });
+    res.status(200).json({
+        success: true,
+        data: {}
+    });
 });
 
 
@@ -235,12 +260,10 @@ exports.getStartupsInRadius = asyncHandler(async(req, res, next) => {
 // @access  Private
 exports.sendPhoto = asyncHandler(async(req, res, next) => {
     console.log('-----------');
+    // Set disposition and send it.
     let file = `/${process.cwd()}/public/uploads/${req.params.photoid}`;
     console.log(process.cwd());
-    // res.status(200).json({
-    //     file
-    // });
-    res.status(200).sendFile(file); // Set disposition and send it.
+    res.status(200).sendFile(file);
 });
 
 // @desc    Upload startup
@@ -277,9 +300,23 @@ exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
         return (next(new ErrorResponse(`Please upload an image less than ${ process.env.MAX_FILE_UPLOAD }`, 400)));
     }
     // Create custom filename
-    file.name = `photo_${ startup._id}${path.parse(file.name).ext }`;
+    file.name = `photo_${startup._id}${path.parse(file.name).ext}`;
 
-    file.mv(`${ process.env.FILE_UPLOAD_PATH }/${file.name}`, async err => {
+    // delete the previous photo
+    if (startup.logo && startup.logo != 'no-photo.jpg') {
+        let previousPhoto = `/${process.cwd()}/public/uploads/${startup.logo}`;
+        if (fs.existsSync(previousPhoto)) {
+            console.log('file exist');
+            try {
+                fs.unlinkSync(previousPhoto);
+                console.log("File is deleted.");
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    }
+
+    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
         if (err) {
             console.error(err);
             return (next(new ErrorResponse(`Problem with file upload`, 500)));
