@@ -180,28 +180,27 @@ exports.deleteStartup = asyncHandler(async(req, res, next) => {
     for (let i = 0; i < 5; i++) {
         let holder = 'm_' + i.toString(10);
         if (startup.mentor[holder].m_id) {
-            console.log(startup.mentor[holder].m_id);
-            let mentor = User.findById(startup.mentor[holder].m_id);
+            let mentor = await User.findById(startup.mentor[holder].m_id);
             if (mentor) {
-                console.log(mentor.startup);
-                // for (let j = 0; j < 5; j++) {
-                // let holder0 = 't_' + j.toString(10);
-                // console.log(mentor.startup);
-                // if (mentor.startup[holder0] == startup.id) {
-                //     mentor.startup[holder0] = null;
-                //     mentor = await User.findByIdAndUpdate(mentor.id, mentor, {
-                //         new: true,
-                //         runValidators: true
-                //     });
-                // console.log(mentor.startup);
-                // break;
-                // }
-                // }
+                for (let j = 0; j < 5; j++) {
+                    let holder0 = 't_' + j.toString(10);
+                    if (mentor.startup[holder0] == startup.id) {
+                        mentor.startup[holder0] = null;
+                        mentor = await User.findByIdAndUpdate(mentor.id, mentor, {
+                            new: true,
+                            runValidators: true
+                        });
+                        break;
+                    }
+                }
             }
         }
     }
-
-
+    // delete the creater
+    const creater = await User.findById(startup.user);
+    if (creater.role == 'user') {
+        creater.remove();
+    }
 
     startup.remove();
 
