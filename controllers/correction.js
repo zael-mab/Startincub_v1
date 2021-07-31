@@ -33,17 +33,17 @@ exports.getStartupsToRate = asyncHandler(async(req, res, next) => {
 // @desc    Update Mentor with new Startup to correct
 // @route   Post /api/v1/users/correct/:id/:startupid
 // @access  Public/Admin
-exports.addCorrectionForMentor = asyncHandler(async(req, res, next) => {
+exports.addCorrectionToMentor = asyncHandler(async(req, res, next) => {
 
     let startup = await Startup.findById(req.params.startupid);
     let user = await User.findById(req.params.id);
 
-    if (!user || !startup) {
-        if (!user)
-            return next(new ErrorResponse(`the user with id ${req.params.id} not found`, 401));
-        else
-            return next(new ErrorResponse(`the startup with id ${req.params.startupid} not found`, 401));
-    }
+    if (!startup && !user)
+        return next(new ErrorResponse(`the user with id >${req.params.id}< and the startup with id >${req.params.startupid}< not found`, 401));
+    if (!user)
+        return next(new ErrorResponse(`the user with id ${req.params.id} not found`, 401));
+    if (!startup)
+        return next(new ErrorResponse(`the startup with id ${req.params.startupid} not found`, 401));
     // check the Mentor tocorrect startups
     if (user.mentoring > 4) {
         return next(new ErrorResponse(`the Mentor with id >${user.id}< can not evaluate this Startup...`, 401));
@@ -98,6 +98,7 @@ exports.addCorrectionForMentor = asyncHandler(async(req, res, next) => {
 // @access  Public/Admin/mentor
 exports.evaluatStartup = asyncHandler(async(req, res, next) => {
 
+    console.log(req.body);
     const user = await User.findById(req.user.id);
 
     if (!user) {
@@ -127,11 +128,11 @@ exports.evaluatStartup = asyncHandler(async(req, res, next) => {
                     if (startup.mentor[holder0].finalGrade == true) {
                         return next(new ErrorResponse(`the startup already evaluated...`, 401))
                     }
-                    // startup.mentor[holder0].gradeRating = req.body.gradeRating;
-                    // startup.mentor[holder0].finalGrade = req.body.finalGrade;
-                    // startup.mentor[holder0].fb = req.body.fb;
-                    // startup.mentor[holder0].sr = req.body.sr;
-                    startup.mentor[holder0] = req.body;
+                    startup.mentor[holder0].finalGrade = req.body.finalGrade;
+                    startup.mentor[holder0].fb = req.body.fb;
+                    startup.mentor[holder0].sr = req.body.sr;
+                    startup.mentor[holder0].total = req.body.total;
+                    startup.mentor[holder0].note = req.body.note;
                     i = 6;
                     x = 1;
                     startup = await Startup.findByIdAndUpdate(req.params.id, startup, {
@@ -244,12 +245,13 @@ exports.clearMentor = asyncHandler(async(req, res, next) => {
     }
     let startup;
 
-    // while on the Mentor 
+    // while Mentors link with startups
     for (let i = 0; i < 5; i++) {
 
         let holder = 't_' + i.toString(10);
         if (mentor.startup[holder]) {
             console.log(holder);
+            // find the startup
             startup = await Startup.findById(mentor.startup[holder]);
 
             // delete the id if the sratup does not exist
@@ -261,8 +263,8 @@ exports.clearMentor = asyncHandler(async(req, res, next) => {
                 });
                 return next(new ErrorResponse(`Startup not found with id >${mentor.startup[holder]}<`, 404));
             }
-
-            for (let j = 0; j < 5; j++) {
+            let j;
+            for (j = 0; j < 5; j++) {
                 let holder0 = 'm_' + j.toString(10);
 
                 // find the mentor palce on the startup
@@ -271,12 +273,17 @@ exports.clearMentor = asyncHandler(async(req, res, next) => {
                     console.log('----------0----------'.blue);
                     console.log(mentor.startup[holder]);
                     mentor.startup[holder] = undefined;
+                    mentor.mentoring--;
+                    console.log('----------$----------'.red);
+                    console.log(mentor.startup[holder]);
                     mentor = await User.findByIdAndUpdate(mentor.id, mentor, {
                         new: true,
                         runValidators: true
                     });
+
                     console.log('----------1----------'.green);
-                    console.log(mentor.startup[holder].m_id);
+                    console.log(mentor.startup[holder]);
+
                     if (startup.mentor[holder0].finalGrade == false) {
 
                         // initialize the grade field for the startup
@@ -289,6 +296,7 @@ exports.clearMentor = asyncHandler(async(req, res, next) => {
                         startup.mentor[holder0].sr = undefined;
                         startup.mentor[holder0].fb = undefined;
                         startup.mentor[holder0].finalGrade = false;
+                        startup.tocorrect--;
 
                         // Update Startup
                         console.log('----------0----------'.blue);
@@ -298,17 +306,35 @@ exports.clearMentor = asyncHandler(async(req, res, next) => {
                             runValidators: true
                         });
                         console.log('----------1----------'.green);
-                        console.log(startup.mentor[holder0].m_id);
-                        break;
-                    } else {
+                        console.log(startup.mentor[holder0]);
                         break;
                     }
+                    // else {
+                    // break;
+                    // }
                 }
+            }
+            if (j == 5) {
+                console.log('----nup--', j);
+                console.log('----------0----------'.blue);
+                console.log(mentor.startup[holder]);
+
+                mentor.startup[holder] = undefined;
+                mentor.mentoring--;
+
+                console.log('----------$----------'.red);
+                console.log(mentor.startup[holder]);
+
+                mentor = await User.findByIdAndUpdate(mentor.id, mentor, {
+                    new: true,
+                    runValidators: true
+                });
 
             }
         }
     }
     res.status(200).json({
-        success: true
+        success: true,
+        mentor
     });
 });

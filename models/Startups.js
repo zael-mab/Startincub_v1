@@ -290,101 +290,103 @@ const StartupSchema = new mongoose.Schema({
                     type: mongoose.Schema.ObjectId,
                     ref: 'User',
                 },
-                dq1: {
-                    type: Number,
-                    default: -1
-                },
-                dq2: {
-                    type: Number,
-                    default: -1
-                },
-                dq3: {
-                    type: Number,
-                    default: -1
-                },
-                dq4: {
-                    type: Number,
-                    default: -1
-                },
-                dq5: {
-                    type: Number,
-                    default: -1
-                },
-                dq6: {
-                    type: Number,
-                    default: -1
-                },
-                dq7: {
-                    type: Number,
-                    default: -1
-                },
-                dq8: {
-                    type: Number,
-                    default: -1
-                },
-                dq9: {
-                    type: Number,
-                    default: -1
-                },
-                dq10: {
-                    type: Number,
-                    default: -1
-                },
-                dq11: {
-                    type: Number,
-                    default: -1
-                },
-                dq12: {
-                    type: Number,
-                    default: -1
-                },
-                dq13: {
-                    type: Number,
-                    default: -1
-                },
-                dq14: {
-                    type: Number,
-                    default: -1
-                },
-                dq15: {
-                    type: Number,
-                    default: -1
-                },
-                dq16: {
-                    type: Number,
-                    default: -1
-                },
-                dq17: {
-                    type: Number,
-                    default: -1
-                },
-                dq18: {
-                    type: Number,
-                    default: -1
-                },
-                dq19: {
-                    type: Number,
-                    default: -1
-                },
-                dq20: {
-                    type: Number,
-                    default: -1
-                },
-                dq21: {
-                    type: Number,
-                    default: -1
-                },
-                dq22: {
-                    type: Number,
-                    default: -1
-                },
-                dq23: {
-                    type: Number,
-                    default: -1
-                },
-                dq24: {
-                    type: Number,
-                    default: -1
+                note: {
+                    cq1: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq2: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq3: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq4: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq5: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq6: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq7: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq8: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq9: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq10: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq11: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq12: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq13: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq14: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq15: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq16: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq17: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq18: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq19: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq20: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq21: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq22: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq23: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq24: {
+                        type: Number,
+                        default: -1
+                    },
                 },
                 total: {
                     type: Number,
@@ -407,101 +409,103 @@ const StartupSchema = new mongoose.Schema({
                     type: mongoose.Schema.ObjectId,
                     ref: 'User',
                 },
-                dq1: {
-                    type: Number,
-                    default: -1
-                },
-                dq2: {
-                    type: Number,
-                    default: -1
-                },
-                dq3: {
-                    type: Number,
-                    default: -1
-                },
-                dq4: {
-                    type: Number,
-                    default: -1
-                },
-                dq5: {
-                    type: Number,
-                    default: -1
-                },
-                dq6: {
-                    type: Number,
-                    default: -1
-                },
-                dq7: {
-                    type: Number,
-                    default: -1
-                },
-                dq8: {
-                    type: Number,
-                    default: -1
-                },
-                dq9: {
-                    type: Number,
-                    default: -1
-                },
-                dq10: {
-                    type: Number,
-                    default: -1
-                },
-                dq11: {
-                    type: Number,
-                    default: -1
-                },
-                dq12: {
-                    type: Number,
-                    default: -1
-                },
-                dq13: {
-                    type: Number,
-                    default: -1
-                },
-                dq14: {
-                    type: Number,
-                    default: -1
-                },
-                dq15: {
-                    type: Number,
-                    default: -1
-                },
-                dq16: {
-                    type: Number,
-                    default: -1
-                },
-                dq17: {
-                    type: Number,
-                    default: -1
-                },
-                dq18: {
-                    type: Number,
-                    default: -1
-                },
-                dq19: {
-                    type: Number,
-                    default: -1
-                },
-                dq20: {
-                    type: Number,
-                    default: -1
-                },
-                dq21: {
-                    type: Number,
-                    default: -1
-                },
-                dq22: {
-                    type: Number,
-                    default: -1
-                },
-                dq23: {
-                    type: Number,
-                    default: -1
-                },
-                dq24: {
-                    type: Number,
-                    default: -1
+                note: {
+                    cq1: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq2: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq3: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq4: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq5: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq6: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq7: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq8: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq9: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq10: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq11: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq12: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq13: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq14: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq15: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq16: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq17: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq18: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq19: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq20: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq21: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq22: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq23: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq24: {
+                        type: Number,
+                        default: -1
+                    },
                 },
                 total: {
                     type: Number,
@@ -524,105 +528,103 @@ const StartupSchema = new mongoose.Schema({
                     type: mongoose.Schema.ObjectId,
                     ref: 'User',
                 },
-                dq1: {
-                    type: Number,
-                    default: -1
-                },
-                dq2: {
-                    type: Number,
-                    default: -1
-                },
-                dq3: {
-                    type: Number,
-                    default: -1
-                },
-                dq4: {
-                    type: Number,
-                    default: -1
-                },
-                dq5: {
-                    type: Number,
-                    default: -1
-                },
-                dq6: {
-                    type: Number,
-                    default: -1
-                },
-                dq7: {
-                    type: Number,
-                    default: -1
-                },
-                dq8: {
-                    type: Number,
-                    default: -1
-                },
-                dq9: {
-                    type: Number,
-                    default: -1
-                },
-                dq10: {
-                    type: Number,
-                    default: -1
-                },
-                dq11: {
-                    type: Number,
-                    default: -1
-                },
-                dq12: {
-                    type: Number,
-                    default: -1
-                },
-                dq13: {
-                    type: Number,
-                    default: -1
-                },
-                dq14: {
-                    type: Number,
-                    default: -1
-                },
-                dq15: {
-                    type: Number,
-                    default: -1
-                },
-                dq16: {
-                    type: Number,
-                    default: -1
-                },
-                dq17: {
-                    type: Number,
-                    default: -1
-                },
-                dq18: {
-                    type: Number,
-                    default: -1
-                },
-                dq19: {
-                    type: Number,
-                    default: -1
-                },
-                dq20: {
-                    type: Number,
-                    default: -1
-                },
-                dq21: {
-                    type: Number,
-                    default: -1
-                },
-                dq22: {
-                    type: Number,
-                    default: -1
-                },
-                dq23: {
-                    type: Number,
-                    default: -1
-                },
-                dq24: {
-                    type: Number,
-                    default: -1
-                },
-                total: {
-                    type: Number,
-                    default: -1
+                note: {
+                    cq1: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq2: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq3: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq4: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq5: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq6: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq7: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq8: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq9: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq10: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq11: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq12: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq13: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq14: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq15: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq16: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq17: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq18: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq19: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq20: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq21: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq22: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq23: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq24: {
+                        type: Number,
+                        default: -1
+                    },
                 },
                 description: {
                     type: String,
@@ -648,101 +650,103 @@ const StartupSchema = new mongoose.Schema({
                     type: mongoose.Schema.ObjectId,
                     ref: 'User',
                 },
-                dq1: {
-                    type: Number,
-                    default: -1
-                },
-                dq2: {
-                    type: Number,
-                    default: -1
-                },
-                dq3: {
-                    type: Number,
-                    default: -1
-                },
-                dq4: {
-                    type: Number,
-                    default: -1
-                },
-                dq5: {
-                    type: Number,
-                    default: -1
-                },
-                dq6: {
-                    type: Number,
-                    default: -1
-                },
-                dq7: {
-                    type: Number,
-                    default: -1
-                },
-                dq8: {
-                    type: Number,
-                    default: -1
-                },
-                dq9: {
-                    type: Number,
-                    default: -1
-                },
-                dq10: {
-                    type: Number,
-                    default: -1
-                },
-                dq11: {
-                    type: Number,
-                    default: -1
-                },
-                dq12: {
-                    type: Number,
-                    default: -1
-                },
-                dq13: {
-                    type: Number,
-                    default: -1
-                },
-                dq14: {
-                    type: Number,
-                    default: -1
-                },
-                dq15: {
-                    type: Number,
-                    default: -1
-                },
-                dq16: {
-                    type: Number,
-                    default: -1
-                },
-                dq17: {
-                    type: Number,
-                    default: -1
-                },
-                dq18: {
-                    type: Number,
-                    default: -1
-                },
-                dq19: {
-                    type: Number,
-                    default: -1
-                },
-                dq20: {
-                    type: Number,
-                    default: -1
-                },
-                dq21: {
-                    type: Number,
-                    default: -1
-                },
-                dq22: {
-                    type: Number,
-                    default: -1
-                },
-                dq23: {
-                    type: Number,
-                    default: -1
-                },
-                dq24: {
-                    type: Number,
-                    default: -1
+                note: {
+                    cq1: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq2: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq3: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq4: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq5: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq6: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq7: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq8: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq9: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq10: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq11: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq12: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq13: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq14: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq15: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq16: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq17: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq18: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq19: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq20: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq21: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq22: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq23: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq24: {
+                        type: Number,
+                        default: -1
+                    },
                 },
                 total: {
                     type: Number,
@@ -765,101 +769,103 @@ const StartupSchema = new mongoose.Schema({
                     type: mongoose.Schema.ObjectId,
                     ref: 'User',
                 },
-                dq1: {
-                    type: Number,
-                    default: -1
-                },
-                dq2: {
-                    type: Number,
-                    default: -1
-                },
-                dq3: {
-                    type: Number,
-                    default: -1
-                },
-                dq4: {
-                    type: Number,
-                    default: -1
-                },
-                dq5: {
-                    type: Number,
-                    default: -1
-                },
-                dq6: {
-                    type: Number,
-                    default: -1
-                },
-                dq7: {
-                    type: Number,
-                    default: -1
-                },
-                dq8: {
-                    type: Number,
-                    default: -1
-                },
-                dq9: {
-                    type: Number,
-                    default: -1
-                },
-                dq10: {
-                    type: Number,
-                    default: -1
-                },
-                dq11: {
-                    type: Number,
-                    default: -1
-                },
-                dq12: {
-                    type: Number,
-                    default: -1
-                },
-                dq13: {
-                    type: Number,
-                    default: -1
-                },
-                dq14: {
-                    type: Number,
-                    default: -1
-                },
-                dq15: {
-                    type: Number,
-                    default: -1
-                },
-                dq16: {
-                    type: Number,
-                    default: -1
-                },
-                dq17: {
-                    type: Number,
-                    default: -1
-                },
-                dq18: {
-                    type: Number,
-                    default: -1
-                },
-                dq19: {
-                    type: Number,
-                    default: -1
-                },
-                dq20: {
-                    type: Number,
-                    default: -1
-                },
-                dq21: {
-                    type: Number,
-                    default: -1
-                },
-                dq22: {
-                    type: Number,
-                    default: -1
-                },
-                dq23: {
-                    type: Number,
-                    default: -1
-                },
-                dq24: {
-                    type: Number,
-                    default: -1
+                note: {
+                    cq1: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq2: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq3: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq4: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq5: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq6: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq7: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq8: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq9: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq10: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq11: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq12: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq13: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq14: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq15: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq16: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq17: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq18: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq19: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq20: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq21: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq22: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq23: {
+                        type: Number,
+                        default: -1
+                    },
+                    cq24: {
+                        type: Number,
+                        default: -1
+                    },
                 },
                 total: {
                     type: Number,

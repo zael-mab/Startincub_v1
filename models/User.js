@@ -58,27 +58,27 @@ const UserSchema = new mongoose.Schema({
         t_0: {
             type: mongoose.Schema.ObjectId,
             ref: 'Startup',
-            require: true
+            // require: true
         },
         t_1: {
             type: mongoose.Schema.ObjectId,
             ref: 'Startup',
-            require: true
+            // require: true
         },
         t_2: {
             type: mongoose.Schema.ObjectId,
             ref: 'Startup',
-            require: true
+            // require: true
         },
         t_3: {
             type: mongoose.Schema.ObjectId,
             ref: 'Startup',
-            require: true
+            // require: true
         },
         t_4: {
             type: mongoose.Schema.ObjectId,
             ref: 'Startup',
-            require: true
+            // require: true
         }
     },
     resetPasswordToken: String,

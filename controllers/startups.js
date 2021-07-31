@@ -144,7 +144,7 @@ exports.updateStartup = asyncHandler(async(req, res, next) => {
     res.status(200).json({ succes: true, ddata: startup });
 });
 
-
+const fs = require('fs');
 // @desc    Delete startup
 // @oute    DELETE /api/v1/Startups/:id
 // @access  Private
@@ -154,15 +154,32 @@ exports.deleteStartup = asyncHandler(async(req, res, next) => {
 
     if (!startup) {
         return next(
-            new ErrorResponse(`Startup not found with id of ${ req.params.id }`),
+            new ErrorResponse(`Startup not found with id of ${req.params.id}`),
             404);
     }
-    // NEEED TO DELETE PHOTOS
 
     // Make sure user is Startup owner.
     if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
-        return next(new ErrorResponse(`User > ${ req.user.id } < is not autorized to delete this Startup `), 401);
+        return next(new ErrorResponse(`User > ${req.user.id} < is not autorized to delete this Startup `), 401);
     }
+
+    // delete the photos
+    let file = `/${process.cwd()}/public/uploads/photo_${startup._id}.jpg`;
+    if (fs.existsSync(file)) {
+        console.log('file exist');
+
+        try {
+            fs.unlink(file);
+            console.log("File is deleted.");
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    // delete the link with Mentors
+    // for (start.mentor)
+
+
 
     startup.remove();
 

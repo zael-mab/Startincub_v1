@@ -4,7 +4,7 @@ const Startups = require('../models/Startups');
 const {
     getStartupsToRate,
     evaluatStartup,
-    addCorrectionForMentor,
+    addCorrectionToMentor,
     deleteStartupFromMentor,
     clearMentor
 } = require('../controllers/correction');
@@ -25,7 +25,7 @@ router.route('/:id')
     .delete(authorize('admin'), clearMentor);
 
 router.route('/:id/:startupid')
-    .post(authorize('admin'), addCorrectionForMentor)
+    .post(authorize('admin'), addCorrectionToMentor)
     .delete(authorize('admin'), deleteStartupFromMentor);
 
 module.exports = router;

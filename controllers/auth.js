@@ -64,11 +64,11 @@ exports.login = asyncHandler(async(req, res, next) => {
     const { email, password } = req.body;
     console.log(req.body);
 
+    // let count = 0;
     // for the count of Startups
-    const resl = await res.advencedResults;
-    console.log(resl);
-    const count = await Startup.estimatedDocumentCount();
-    console.log(count);
+    // const resl = await res.advencedResults;
+    // console.log(resl);
+    // console.log(count);
 
 
     // Validate email and password
@@ -219,9 +219,13 @@ exports.resetPassword = asyncHandler(async(req, res, next) => {
 
 
 //  Get token from model, create cookieand send response
-const sendTokenResponse = (user, statusCode, res) => {
+const sendTokenResponse = async(user, statusCode, res) => {
     //Create token
     const token = user.getSignedJwtToken();
+    let count = 0;
+    if (user.role == 'admin') {
+        count = await Startup.estimatedDocumentCount();
+    }
 
     const options = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 3600 * 1000),
@@ -238,6 +242,7 @@ const sendTokenResponse = (user, statusCode, res) => {
         .json({
             success: true,
             data: user,
+            count,
             token
         });
 };
