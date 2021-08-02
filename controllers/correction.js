@@ -3,23 +3,77 @@ const Startup = require('../models/Startups');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const advencedResults = require('../midlleware/advencedResults');
+const lookingForMentorId = require('../midlleware/correction');
+
+
+// @desc    Get startup to evaluate
+// @oute    GET /api/v1/correction/:startupid
+// @access  Public/Mentor
+exports.getStartupToRate = asyncHandler(async(req, res, next) => {
+
+    if (!req.user) {
+        return next(new ErrorResponse(`login first...`, 401));
+    }
+
+    let mentor = await User.findById(req.user.id);
+    if (!mentor) {
+        return next(new ErrorResponse(`no mentor with id >${req.user.id}<`, 401));
+    }
+
+    let startup = await Startup.findById(req.params.id);
+    if (!startup) {
+        return next(new ErrorResponse(`no mentor with id >${req.params.id}<`, 401));
+    }
+
+    const position = await lookingForMentorId(startup, mentor);
+    if (position == -1) {
+        return next(new ErrorResponse(`no link with Startip with id >${req.params.id}<`, 401));
+    }
+
+    const holder = 'm_' + position.toString(10);
+
+
+    res.status(200).json({
+        success: true,
+        form: startup.form,
+        mentor: startup.mentor[holder],
+        Sname: startup.Sname,
+        logo: startup.logo
+
+    });
+});
 
 
 // @desc    Get startups to evaluate
 // @oute    GET /api/v1/correction
-// @access  Public/Admin
+// @access  Public/Mentor
 exports.getStartupsToRate = asyncHandler(async(req, res, next) => {
     if (!req.user) {
         return next(new ErrorResponse(`login first...`, 401));
     }
+    console.log(req.user.id);
     const user = await User.findById(req.user.id);
 
     let startups = [];
-    for (let i = 0; i < 5; i++) {
-        let holder = 't_' + i.toString(10);
-        const tmp = await Startup.findById(user.startup[holder]);
-        if (tmp)
-            startups.push(tmp);
+    if (user.role == 'mentor') {
+        for (let i = 0; i < 5; i++) {
+            let holder = 't_' + i.toString(10);
+            let tmp = await Startup.findById(user.startup[holder]);
+
+            if (tmp) {
+                const position = await lookingForMentorId(tmp, user);
+
+                const p_id = 'm_' + position.toString(10);
+
+                const mentor = JSON.parse(JSON.stringify(tmp.mentor[p_id]))
+                tmp.mentor = null;
+                tmp.mentor[p_id] = mentor;
+                startups.push(tmp);
+            }
+        }
+    }
+    if (user.role == 'admin') {
+        startups = await Startup.find();
     }
 
     res.status(200).json({
@@ -102,7 +156,7 @@ exports.evaluatStartup = asyncHandler(async(req, res, next) => {
     const user = await User.findById(req.user.id);
 
     if (!user) {
-        console.log('----no user with ----');
+        console.log('----no user with id----');
     }
     let startup;
 

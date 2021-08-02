@@ -91,6 +91,8 @@ exports.login = asyncHandler(async(req, res, next) => {
 exports.getMe = asyncHandler(async(req, res, next) => {
     const user = await User.findById(req.user.id);
 
+    await delete user['firstname'];
+
 
     res.status(200).json({
         success: true,
@@ -105,6 +107,8 @@ exports.getMe = asyncHandler(async(req, res, next) => {
 exports.updateDetails = asyncHandler(async(req, res, next) => {
     const fieldsToUpdate = {
         firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        phone: req.body.phone,
         email: req.body.email
     };
 

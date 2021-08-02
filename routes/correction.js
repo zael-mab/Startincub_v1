@@ -6,6 +6,7 @@ const {
     evaluatStartup,
     addCorrectionToMentor,
     deleteStartupFromMentor,
+    getStartupToRate,
     clearMentor
 } = require('../controllers/correction');
 
@@ -18,9 +19,10 @@ router.use(protect);
 // router.use(authorize('admin'));
 
 router.route('/')
-    .get(authorize('mentor'), getStartupsToRate);
+    .get(authorize('mentor', 'admin'), getStartupsToRate);
 
 router.route('/:id')
+    .get(authorize('mentor', 'admin'), getStartupToRate)
     .put(authorize('mentor'), evaluatStartup)
     .delete(authorize('admin'), clearMentor);
 
