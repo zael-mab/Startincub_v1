@@ -49,7 +49,6 @@ exports.register = asyncHandler(async(req, res, next) => {
         email,
         password,
         mentoring,
-        role
     });
 
     // Create Token
