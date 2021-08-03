@@ -31,7 +31,6 @@ exports.createUser = asyncHandler(async(req, res, next) => {
     delete req.body.startupid;
     delete req.body.mentoring;
 
-
     const dupUser = await User.findOne({
         email: req.body.email
     });
