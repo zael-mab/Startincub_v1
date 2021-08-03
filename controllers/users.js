@@ -27,6 +27,18 @@ exports.getUser = asyncHandler(async(req, res, next) => {
 // @oute    POST /api/v1/auth/users
 // @access  Public/Admin
 exports.createUser = asyncHandler(async(req, res, next) => {
+    delete req.body.startup;
+    delete req.body.startupid;
+    delete req.body.mentoring;
+
+
+    const dupUser = await User.findOne({
+        email: req.body.email
+    });
+    if (dupUser) {
+        return next(new ErrorResponse(`Email >${dupUser.email}< already used...`, 401));
+    }
+
     const user = await User.create(req.body);
 
     res.status(201).json({
