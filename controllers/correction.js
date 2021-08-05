@@ -124,8 +124,6 @@ exports.addCorrectionToMentor = asyncHandler(async(req, res, next) => {
             y = holder;
         }
         if (x && y) {
-            console.log('-----x&y=');
-            console.log(x, y);
             mentor.startup[y] = startup.id;
             startup.mentor[x].m_id = mentor.id;
             mentor.mentoring++;
