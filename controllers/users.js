@@ -3,7 +3,7 @@ const Startup = require('../models/Startups');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const advencedResults = require('../midlleware/advencedResults');
-
+const { clearStartups, clearMentor } = require('../midlleware/correction');
 // @desc    Get all users
 // @oute    GET /api/v1/auth/users
 // @access  Public/Admin
@@ -67,7 +67,23 @@ exports.updateUser = asyncHandler(async(req, res, next) => {
 // @oute    DELETE /api/v1/auth/users/:id
 // @access  Public/Admin
 exports.deleteUser = asyncHandler(async(req, res, next) => {
+
+    // 
+    const user = await User.findById(req.params.id);
+    if (!user) {
+        return next(new ErrorResponse(`user with id <${req.params.id}> not found...`, 401));
+    }
+    if (user.role == 'mentor' && user.mentoring > 0) {
+        await clearStartups(user);
+    }
+    // 
+
     await User.findByIdAndDelete(req.params.id);
+    if (user.startupid) {
+        let startup = await Startup.findById(user.startupid);
+        clearMentor(startup);
+        await Startup.findByIdAndDelete(user.startupid);
+    }
 
     res.status(200).json({
         success: true,

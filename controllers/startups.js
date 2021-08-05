@@ -5,6 +5,7 @@ const asyncHandler = require('../midlleware/async');
 const geocoder = require('../utils/geocoder');
 const path = require('path');
 const fs = require('fs');
+const { clearStartups, clearMentors } = require('../midlleware/correction');
 
 
 
@@ -47,6 +48,7 @@ exports.getStartup = asyncHandler(async(req, res, next) => {
     if (!startup) {
         return next(new ErrorResponse(`Startup not found with id of ${req.params.id}`), 404);
     }
+    // CHANGE THE RES DATA
     res.status(200).json({ success: true, data: startup });
 });
 
@@ -104,13 +106,15 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
             runValidators: true
         });
     } else {
-        message = '----no mentor availble---';
+        message = 'no mentor  found to evaluate...';
     }
+
     ownerUser.startupid = startup.id;
     await User.findByIdAndUpdate(ownerUser.id, ownerUser, {
         new: true,
         runValidators: true
     });
+
     res.status(201).json({
         success: true,
         msg: `Create new startup... ${message}`,
@@ -177,25 +181,7 @@ exports.deleteStartup = asyncHandler(async(req, res, next) => {
     }
 
     // delete the link with Mentors
-    for (let i = 0; i < 5; i++) {
-        let holder = 'm_' + i.toString(10);
-        if (startup.mentor[holder].m_id) {
-            let mentor = await User.findById(startup.mentor[holder].m_id);
-            if (mentor) {
-                for (let j = 0; j < 5; j++) {
-                    let holder0 = 't_' + j.toString(10);
-                    if (mentor.startup[holder0] == startup.id) {
-                        mentor.startup[holder0] = null;
-                        mentor = await User.findByIdAndUpdate(mentor.id, mentor, {
-                            new: true,
-                            runValidators: true
-                        });
-                        break;
-                    }
-                }
-            }
-        }
-    }
+    clearMentors(startup);
     // delete the creater
     const creater = await User.findById(startup.user);
     if (creater.role == 'user') {
