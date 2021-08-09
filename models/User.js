@@ -54,6 +54,10 @@ const UserSchema = new mongoose.Schema({
         ref: 'Startup',
         require: true
     },
+    logo: {
+        type: String,
+        default: 'no-photo.jpg'
+    },
     startup: {
         t_0: {
             type: mongoose.Schema.ObjectId,

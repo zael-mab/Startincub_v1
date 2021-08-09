@@ -3,8 +3,6 @@ const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const geocoder = require('../utils/geocoder');
-const path = require('path');
-const fs = require('fs');
 const { clearStartups, clearMentors } = require('../midlleware/correction');
 
 
@@ -127,22 +125,34 @@ exports.createStartup = asyncHandler(async(req, res, next) => {
 // @access  Private
 exports.updateStartup = asyncHandler(async(req, res, next) => {
 
+
     let startup = await Startup.findById(req.params.id);
 
     if (!startup)
         return next(new ErrorResponse(`Startup not found with id of ${ req.params.id }`), 404);
 
     // Make sure user is startup owner
-    if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
-        return next(new ErrorResponse(`User > ${ req.user.id } < is not autorized to update this Startup `), 401);
-    }
-    delete req.body.mentor;
-    delete req.body.form;
-    delete req.body.tocorrect;
-    delete req.body.evaluated;
-    delete req.body.finelgrade;
+    console.log(req.user);
+    // if (startup.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    //     return next(new ErrorResponse(`User > ${ req.user.id } < is not autorized to update this Startup `), 401);
+    // }
 
-    startup = await Startup.findByIdAndUpdate(req.params.id, req.body, {
+    // 
+    const fieldsToUpdate = {
+        Sname: req.body.Sname,
+        website: req.body.website,
+        address: req.body.address,
+        phone: req.body.phone
+    };
+    // console.log(fieldsToUpdate);
+    // 
+    // delete req.body.mentor;
+    // delete req.body.form;
+    // delete req.body.tocorrect;
+    // delete req.body.evaluated;
+    // delete req.body.finelgrade;
+
+    startup = await Startup.findByIdAndUpdate(req.params.id, fieldsToUpdate, {
         new: true,
         runValidators: true
     });
@@ -251,11 +261,14 @@ exports.sendPhoto = asyncHandler(async(req, res, next) => {
     res.status(200).sendFile(file);
 });
 
+const uploadPhoto = require('../midlleware/uploadphoto');
+
 // @desc    Upload startup
 // @oute    PUT /api/v1/Startups/:id/photo
 // @access  Private
 exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
 
+    console.log(req.body);
     const startup = await Startup.findById(req.params.id);
 
     if (!startup) {
@@ -273,46 +286,13 @@ exports.StartupPhotoUpload = asyncHandler(async(req, res, next) => {
         return (next(new ErrorResponse(`Please upload a file `, 400)));
     }
 
-    const file = req.files.file;
+    let file = req.files.file;
+    file = uploadPhoto(file, startup);
 
-    // Make sure the image is a photo
-    if (!file.mimetype.startsWith('image')) {
-        return (next(new ErrorResponse(`Please upload an image file `, 400)));
-    }
-
-    // Check filesize
-    if (file.size > process.env.MAX_FILE_UPLOAD) {
-        return (next(new ErrorResponse(`Please upload an image less than ${ process.env.MAX_FILE_UPLOAD }`, 400)));
-    }
-    // Create custom filename
-    file.name = `photo_${startup._id}${path.parse(file.name).ext}`;
-
-    // delete the previous photo
-    if (startup.logo && startup.logo != 'no-photo.jpg') {
-        let previousPhoto = `/${process.cwd()}/public/uploads/${startup.logo}`;
-        if (fs.existsSync(previousPhoto)) {
-            console.log('file exist');
-            try {
-                fs.unlinkSync(previousPhoto);
-                console.log("File is deleted.");
-            } catch (err) {
-                console.log(err);
-            }
-        }
-    }
-
-    file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
-        if (err) {
-            console.error(err);
-            return (next(new ErrorResponse(`Problem with file upload`, 500)));
-        }
-
-        await Startup.findByIdAndUpdate(req.params.id, { logo: file.name });
-        res.status(200).json({
-            success: true,
-            data: file.name
-        });
+    await Startup.findByIdAndUpdate(req.params.id, { logo: file.name });
+    res.status(200).json({
+        success: true,
+        data: file.name
     });
 
-    console.log(file.name);
 });

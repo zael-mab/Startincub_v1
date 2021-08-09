@@ -25,24 +25,26 @@ const { protect, authorize } = require('../midlleware/auth');
 // router.use('/:startupId/courses', courseRouter);
 
 
+
 router.route('/photo/:photoid')
     .get(sendPhoto);
+router.use(protect);
 
 router.route('/check')
-    .post(check);
+    .post(authorize('admin'), check);
 
 router.route('/redius/:zipcode/:distance').get(getStartupsInRadius);
 
 router.route('/:id/photo')
-    .put(protect, authorize('user', 'admin'), StartupPhotoUpload);
+    .put(authorize('user', 'admin'), StartupPhotoUpload);
 
 router.route('/')
-    .get(advencedResults(Startup, { path: 'user', select: 'firstname lastname email' }), getStartups)
-    .post(protect, authorize('user', 'admin'), createStartup);
+    .get(advencedResults(Startup, { path: 'user', select: 'firstname lastname email' }), authorize('admin'), getStartups)
+    .post(authorize('user', 'admin'), createStartup);
 
 router.route('/:id')
-    .get(getStartup)
-    .put(protect, authorize('user', 'admin'), updateStartup)
-    .delete(protect, authorize('user', 'admin'), deleteStartup);
+    .get(authorize('admin'), getStartup)
+    .put(authorize('admin'), updateStartup)
+    .delete(authorize('user', 'admin'), deleteStartup);
 
 module.exports = router;

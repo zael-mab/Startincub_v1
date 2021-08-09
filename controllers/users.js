@@ -3,7 +3,8 @@ const Startup = require('../models/Startups');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../midlleware/async');
 const advencedResults = require('../midlleware/advencedResults');
-const { clearStartups, clearMentor } = require('../midlleware/correction');
+const { clearStartups, clearMentors } = require('../midlleware/correction');
+const uploadPhoto = require('../midlleware/uploadphoto');
 // @desc    Get all users
 // @oute    GET /api/v1/auth/users
 // @access  Public/Admin
@@ -38,7 +39,12 @@ exports.createUser = asyncHandler(async(req, res, next) => {
         return next(new ErrorResponse(`Email >${dupUser.email}< already used...`, 401));
     }
 
-    const user = await User.create(req.body);
+    let user = await User.create(req.body);
+
+    let file = req.files.file;
+    file = uploadPhoto(file, user);
+    user.logo = file.name;
+    user.save();
 
     res.status(201).json({
         success: true,
@@ -81,7 +87,7 @@ exports.deleteUser = asyncHandler(async(req, res, next) => {
     await User.findByIdAndDelete(req.params.id);
     if (user.startupid) {
         let startup = await Startup.findById(user.startupid);
-        clearMentor(startup);
+        clearMentors(startup);
         await Startup.findByIdAndDelete(user.startupid);
     }
 

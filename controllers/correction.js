@@ -6,7 +6,7 @@ const advencedResults = require('../midlleware/advencedResults');
 const { lookingForMentorId, lookingForIdPositions, clearStartups, clearSingleMentor } = require('../midlleware/correction');
 
 
-// @desc    Get startup to evaluate
+// @desc    Put startup to evaluate
 // @oute    GET /api/v1/correction/:startupid
 // @access  Public/Mentor
 exports.getStartupToRate = asyncHandler(async(req, res, next) => {
@@ -32,13 +32,13 @@ exports.getStartupToRate = asyncHandler(async(req, res, next) => {
 
     const holder = 'm_' + position.toString(10);
 
-
     res.status(200).json({
         success: true,
         form: startup.form,
         mentor: startup.mentor[holder],
         Sname: startup.Sname,
-        logo: startup.logo
+        logo: startup.logo,
+        website: startup.website
 
     });
 });
@@ -64,11 +64,10 @@ exports.getStartupsToRate = asyncHandler(async(req, res, next) => {
                 const position = await lookingForMentorId(tmp, user);
 
                 const p_id = 'm_' + position.toString(10);
-
-                const mentor = JSON.parse(JSON.stringify(tmp.mentor[p_id]))
-                tmp.mentor = null;
-                tmp.mentor[p_id] = mentor;
-                startups.push(tmp);
+                let mentor = JSON.parse(JSON.stringify(tmp))
+                mentor.mentor = undefined;
+                mentor.mentor = tmp.mentor[p_id];
+                startups.push(mentor);
             }
         }
     }
@@ -165,6 +164,7 @@ exports.evaluatStartup = asyncHandler(async(req, res, next) => {
 
     // NEED MORE DATA ABOUT CORRECTION
     // ////////////
+    let holder0;
     let i;
     for (i = 0; i < 5; i++) {
         let holder = 't_' + i.toString(10);
@@ -180,7 +180,7 @@ exports.evaluatStartup = asyncHandler(async(req, res, next) => {
                 return next(new ErrorResponse(`not mutch...1`, 401));
             }
             /////////////////
-            let holder0 = 'm_' + position.toString(10);
+            holder0 = 'm_' + position.toString(10);
             if (startup.mentor[holder0].finalGrade == true) {
                 return next(new ErrorResponse(`the startup already evaluated...`, 401))
             }
@@ -201,12 +201,13 @@ exports.evaluatStartup = asyncHandler(async(req, res, next) => {
         return next(new ErrorResponse(`no match...2`, 401));
         console.log('no match...');
     }
-
-
     res.status(200).json({
         success: true,
-        data: mentor,
-        startup
+        form: startup.form,
+        mentor: startup.mentor[holder0],
+        Sname: startup.Sname,
+        logo: startup.logo,
+        website: startup.website
     });
 
 });
