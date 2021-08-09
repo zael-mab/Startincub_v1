@@ -41,10 +41,12 @@ exports.createUser = asyncHandler(async(req, res, next) => {
 
     let user = await User.create(req.body);
 
-    let file = req.files.file;
-    file = uploadPhoto(file, user);
-    user.logo = file.name;
-    user.save();
+    if (req.files != null) {
+        let file = req.files.file;
+        file = uploadPhoto(file, user);
+        user.logo = file.name;
+        user.save();
+    }
 
     res.status(201).json({
         success: true,

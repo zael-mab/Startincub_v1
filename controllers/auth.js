@@ -50,13 +50,12 @@ exports.register = asyncHandler(async(req, res, next) => {
         password,
         mentoring,
     });
-
-    let file = req.files.file;
-    file = uploadPhoto(file, user);
-    console.log(file.name);
-    user.logo = file.name;
-    user.save();
-
+    if (req.files != null) {
+        let file = req.files.file;
+        file = uploadPhoto(file, user);
+        user.logo = file.name;
+        user.save();
+    }
     // Create Token
     sendTokenResponse(user, 200, res);
 });
