@@ -28,6 +28,7 @@ const { protect, authorize } = require('../midlleware/auth');
 
 router.route('/photo/:photoid')
     .get(sendPhoto);
+
 router.use(protect);
 
 router.route('/check')

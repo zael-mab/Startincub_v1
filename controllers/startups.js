@@ -255,7 +255,7 @@ exports.getStartupsInRadius = asyncHandler(async(req, res, next) => {
 // @oute    PUT /api/v1/Startups/photo/:photoid
 // @access  Private
 exports.sendPhoto = asyncHandler(async(req, res, next) => {
-    console.log('-----------');
+    // console.log('-----------');
     // Set disposition and send it.
     let file = `/${process.cwd()}/public/uploads/${req.params.photoid}`;
     console.log(process.cwd());
