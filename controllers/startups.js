@@ -5,7 +5,8 @@ const asyncHandler = require('../midlleware/async');
 const geocoder = require('../utils/geocoder');
 const { clearStartups, clearMentors } = require('../midlleware/correction');
 
-
+const path = require('path');
+const fs = require('fs');
 
 // @desc    check for Startup name
 // @oute    GET /api/v1/Startups/check

@@ -31,7 +31,7 @@ const uploadPhoto = (file, model) => {
         }
 
     }
-
+    console.log(process.env.FILE_UPLOAD_PATH);
     file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
         if (err) {
             console.error(err);
