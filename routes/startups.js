@@ -29,10 +29,11 @@ const { protect, authorize } = require('../midlleware/auth');
 router.route('/photo/:photoid')
     .get(sendPhoto);
 
-router.use(protect);
 
 router.route('/check')
-    .post(authorize('admin'), check);
+    .post(check);
+
+router.use(protect);
 
 router.route('/redius/:zipcode/:distance').get(getStartupsInRadius);
 

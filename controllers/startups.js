@@ -16,6 +16,7 @@ exports.check = asyncHandler(async(req, res, next) => {
     const startup = await Startup.findOne({
         Sname: req.body.Sname
     });
+    console.log(startup);
     let data = false;
     if (startup) {
         data = true;
