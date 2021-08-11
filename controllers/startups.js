@@ -259,7 +259,7 @@ exports.sendPhoto = asyncHandler(async(req, res, next) => {
     // Set disposition and send it.
     let file = `/${process.cwd()}/public/uploads/${req.params.photoid}`;
     console.log(process.cwd());
-    res.status(200).sendFile(file);
+    await res.status(200).sendFile(file);
 });
 
 const uploadPhoto = require('../midlleware/uploadphoto');
