@@ -67,7 +67,7 @@ app.use(mongoSanitize());
 // Set security headers 
 app.use(helmet());
 
-// Prevent XSS attackes
+// Prevent XSS attackes 
 app.use(xss());
 
 // Set static folder 

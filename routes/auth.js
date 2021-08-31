@@ -8,6 +8,8 @@ const {
     updateDetails,
     updatePassword,
     logout,
+    updatePhoto,
+    sendPhoto,
     check
 } = require('../controllers/auth');
 
@@ -16,6 +18,10 @@ const router = express.Router();
 const advencedResults = require('../midlleware/advencedResults');
 const Startup = require('../models/Startups');
 const { protect } = require('../midlleware/auth');
+
+
+router.route('/:photoid')
+    .get(protect, sendPhoto);
 
 router.route('/register')
     .post(register);
@@ -42,6 +48,9 @@ router.route('/updatedetails')
 
 router.route('/updatepassword')
     .put(protect, updatePassword);
+
+router.route('/updatephoto')
+    .put(protect, updatePhoto);
 
 
 module.exports = router;

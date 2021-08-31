@@ -164,6 +164,36 @@ exports.updatePassword = asyncHandler(async(req, res, next) => {
 });
 
 
+// @desc    Update user photo
+// @route   PUT /api/v1/auth/updatephoto
+// @access  Private
+exports.updatePhoto = asyncHandler(async(req, res, next) => {
+
+    let user = await User.findById(req.user.id);
+
+    if (req.files != null) {
+        let file = req.files.file;
+        file = uploadPhoto(file, user);
+        user.logo = file.name;
+        user.save();
+    }
+
+    sendTokenResponse(user, 200, res);
+});
+
+
+
+// @desc    Get user photo
+// @oute    GET /api/v1/auth/:photoid
+// @access  Private
+exports.sendPhoto = asyncHandler(async(req, res, next) => {
+    // console.log('-----------');
+    // Set disposition and send it.
+    let file = `/${process.cwd()}/public/uploads/${req.params.photoid}`;
+    console.log(process.cwd());
+    await res.status(200).sendFile(file);
+});
+
 // @desc    Forgot password
 // @route   POST /api/v1/auth/forgotpassword
 // @access  Public
