@@ -98,7 +98,6 @@ exports.clearSingleMentor = asyncHandler(async(mentor) => {
     }
     try {
         mentor = await mentor.save();
-        //     // console.log(mentor);
     } catch (err) {
         console.log(err);
     }

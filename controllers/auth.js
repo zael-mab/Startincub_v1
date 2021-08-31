@@ -66,7 +66,7 @@ exports.register = asyncHandler(async(req, res, next) => {
 // @access  Public
 exports.login = asyncHandler(async(req, res, next) => {
     const { email, password } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
 
     // Validate email and password
     if (!email || !password) {
@@ -88,6 +88,23 @@ exports.login = asyncHandler(async(req, res, next) => {
     sendTokenResponse(user, 200, res);
 });
 
+
+// @desc    Log user out / Clear cookie
+// @route   GET /api/v1/auth/logout
+// @access  Private
+exports.logout = asyncHandler(async(req, res, next) => {
+
+    res.cookie('token', 'none', {
+        expire: new Date(Date.now + 10 * 1000),
+        httpOnly: true
+    });
+
+
+    res.status(200).json({
+        success: true,
+        data: {}
+    });
+});
 
 // @desc    Get current loggoed in user
 // @route   POST /api/v1/auth/me
@@ -149,7 +166,7 @@ exports.updatePassword = asyncHandler(async(req, res, next) => {
 
 // @desc    Forgot password
 // @route   POST /api/v1/auth/forgotpassword
-// @access  Pblic
+// @access  Public
 exports.forgotPassword = asyncHandler(async(req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
 
@@ -200,7 +217,9 @@ exports.resetPassword = asyncHandler(async(req, res, next) => {
         .createHash('sha256')
         .update(req.params.resettoken)
         .digest('hex');
+
     console.log(resetPasswordToken);
+
     const user = await User.findOne({
         resetPasswordToken,
         resetPasswordExpire: { $gt: Date.now() }
