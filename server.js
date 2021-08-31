@@ -18,6 +18,8 @@ const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
 
 // Route files
 const startups = require('./routes/startups');
@@ -69,6 +71,17 @@ app.use(helmet());
 
 // Prevent XSS attackes 
 app.use(xss());
+
+//  rate limiting
+const limiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 min
+    max: 200
+});
+
+app.use(limiter);
+
+//  prevent http pram pollution
+app.use(hpp());
 
 // Set static folder 
 app.use('/uploads', express.static(path.join(__dirname, 'public')));
