@@ -13,13 +13,13 @@ router.use(authorize('admin'));
 router
     .route('/')
     .get(advencedResults(User), getUsers)
-    .post(createUser);
+    .post(createUser)
+    .delete(deleteUser);
 
 
 
 router.route('/:id')
     .get(getUser)
-    .put(updateUser)
-    .delete(deleteUser);
+    .put(updateUser);
 
 module.exports = router;

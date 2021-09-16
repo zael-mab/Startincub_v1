@@ -20,6 +20,10 @@ const Startup = require('../models/Startups');
 const { protect } = require('../midlleware/auth');
 
 
+
+router.route('/me')
+    .get(protect, getMe);
+
 router.route('/:photoid')
     .get(protect, sendPhoto);
 
@@ -28,11 +32,9 @@ router.route('/register')
 router.route('/check')
     .post(check);
 
+
 router.route('/login')
     .post(advencedResults(Startup, { path: 'user', select: 'firstname lastname email' }), login);
-
-router.route('/me')
-    .get(protect, getMe);
 
 router.route('/logout')
     .get(protect, logout);

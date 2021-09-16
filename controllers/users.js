@@ -77,24 +77,30 @@ exports.updateUser = asyncHandler(async(req, res, next) => {
 exports.deleteUser = asyncHandler(async(req, res, next) => {
 
     // 
-    const user = await User.findById(req.params.id);
-    if (!user) {
-        return next(new ErrorResponse(`user with id <${req.params.id}> not found...`, 401));
-    }
-    if (user.role == 'mentor' && user.mentoring > 0) {
-        await clearStartups(user);
-    }
-    // 
+    let x = 0;
+    x = req.body.length == undefined ? 0 : req.body.length;
 
-    await User.findByIdAndDelete(req.params.id);
-    if (user.startupid) {
-        let startup = await Startup.findById(user.startupid);
-        clearMentors(startup);
-        await Startup.findByIdAndDelete(user.startupid);
+    for (let i = 0; i < x; i++) {
+        const user = await User.findById(req.body[i]);
+        if (!user) {
+            return next(new ErrorResponse(`user with id <${req.body[i]}> not found...`, 401));
+        }
+        if (user.role == 'mentor' && user.mentoring > 0) {
+            await clearStartups(user);
+        }
+
+        // 
+        await User.findByIdAndDelete(req.body[i]);
+        if (user.startupid) {
+            let startup = await Startup.findById(user.startupid);
+            clearMentors(startup);
+            await Startup.findByIdAndDelete(user.startupid);
+        }
     }
 
+    const allUsers = await User.find();
     res.status(200).json({
         success: true,
-        data: {}
+        data: allUsers
     });
 });
