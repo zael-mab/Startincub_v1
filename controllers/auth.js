@@ -57,8 +57,9 @@ exports.register = asyncHandler(async(req, res, next) => {
         user.logo = file.name;
         user.save();
     }
-    // //
+    // Send email for the verification
     emailVerifie(req, res, next, user);
+
     // Create Token
     sendTokenResponse(user, 200, res);
 });
