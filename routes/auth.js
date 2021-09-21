@@ -10,6 +10,7 @@ const {
     logout,
     updatePhoto,
     sendPhoto,
+    verify,
     check
 } = require('../controllers/auth');
 
@@ -53,6 +54,9 @@ router.route('/updatepassword')
 
 router.route('/updatephoto')
     .put(protect, updatePhoto);
+
+router.route('/validate/:id')
+    .get(verify);
 
 
 module.exports = router;

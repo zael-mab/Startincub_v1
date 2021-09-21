@@ -6,16 +6,22 @@ const nodemailer = require("nodemailer");
 const sendEmail = async(options) => {
 
     const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
+        service: "gmail",
         auth: {
-            user: process.env.SMTP_EMAIL,
-            pass: process.env.SMTP_PASSWORD
-        },
+            user: "ux80465@gmail.com",
+            pass: "test1234_1234"
+        }
+        // host: process.env.SMTP_HOST,
+        // port: process.env.SMTP_PORT,
+        // auth: {
+        //     user: process.env.SMTP_EMAIL,
+        //     pass: process.env.SMTP_PASSWORD
+        // },
     });
 
     const message = {
-        from: `${process.env.FROM_NAME} , <${process.env.FROM_EMAIL}>`,
+        // from: `${process.env.FROM_NAME} , <${process.env.FROM_EMAIL}>`,
+        from: `ux80465@gmail.com`,
         to: options.email,
         subject: options.subject,
         text: options.message

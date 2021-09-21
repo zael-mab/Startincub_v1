@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema({
         // default: null,
         required: [true, 'Please add your phone number']
     },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
     email: {
         type: String,
         trim: true,

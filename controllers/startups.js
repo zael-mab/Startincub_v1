@@ -252,8 +252,8 @@ exports.getStartupsInRadius = asyncHandler(async(req, res, next) => {
     });
 });
 
-// @desc    Upload startup
-// @oute    PUT /api/v1/Startups/photo/:photoid
+// @desc    Get startup
+// @oute    GET /api/v1/Startups/photo/:photoid
 // @access  Private
 exports.sendPhoto = asyncHandler(async(req, res, next) => {
     // console.log('-----------');

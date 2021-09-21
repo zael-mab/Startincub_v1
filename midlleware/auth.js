@@ -45,3 +45,31 @@ exports.authorize = (...roles) => {
         next();
     };
 };
+
+const sendEmail = require('../utils/sendEmail');
+
+// email verified
+exports.emailVerifie = (async(req, res, next, user) => {
+    //
+    const token = jwt.sign(user.id, process.env.JWT_SECRET);
+    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/validate/${token}`;
+    const message = `from startincub ....to validite your email ${resetUrl}`;
+
+    // let emailData = 200;
+    try {
+        console.log('-------------------'.red);
+        await sendEmail({
+            email: user.email,
+            subject: 'verify emial',
+            message
+        });
+        // emailData = 201;
+
+    } catch (err) {
+        console.log('*********************'.red);
+        console.log(err);
+
+        return next(new ErrorResponse('Email could not be sent', 500));
+    }
+
+});

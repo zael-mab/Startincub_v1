@@ -6,7 +6,7 @@ const geocoder = require('../utils/geocoder');
 const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 const uploadPhoto = require('../midlleware/uploadphoto');
-
+const jwt = require('jsonwebtoken');
 
 // @desc    check for user
 // @oute    POST /api/v1/auth/check
@@ -27,7 +27,8 @@ exports.check = asyncHandler(async(req, res, next) => {
 });
 
 
-
+// const uniqueString = require('unique-string');
+const { emailVerifie } = require('../midlleware/auth');
 // @desc    Register user
 // @oute    POST /api/v1/auth/regster
 // @access  Public
@@ -56,9 +57,63 @@ exports.register = asyncHandler(async(req, res, next) => {
         user.logo = file.name;
         user.save();
     }
+    // //
+    emailVerifie(req, res, next, user);
     // Create Token
     sendTokenResponse(user, 200, res);
 });
+
+
+
+exports.verify = asyncHandler(async(req, res, next) => {
+
+    const id = req.params.id;
+    let decoded = jwt.verify(id, process.env.JWT_SECRET);
+
+    console.log('!!!!!!!');
+    console.log(decoded);
+
+    let user = await User.findById(decoded);
+    if (user) {
+        if (!user.isVerified) {
+            user.isVerified = true;
+            await user.save();
+
+            res.status(200).json({
+                success: true,
+                verified: true
+            });
+
+        } else {
+
+            res.status(200).json({
+                msg: "Already email Verified !"
+            })
+        }
+
+    } else {
+        res.status(200).json({
+            success: false,
+            verified: false,
+            msg: "token broken"
+        });
+    }
+    // // Check that the user didn't take too long
+    // let dateNow = new Date();
+    // let tokenTime = decoded.iat * 1000;
+
+    // // Two hours
+    // let hours = 2;
+    // let tokenLife = hours * 60 * 1000;
+    // console.log(tokenTime + tokenLife);
+
+    // // User took too long to enter the code
+    // if (tokenTime + tokenLife < dateNow.getTime()) {
+
+    // }
+});
+
+
 
 
 // @desc    Login user
@@ -112,7 +167,6 @@ exports.logout = asyncHandler(async(req, res, next) => {
 exports.getMe = asyncHandler(async(req, res, next) => {
 
     const user = await User.findById(req.user.id);
-    // console.log(req.user.id);
     // await delete user['firstname'];
 
 
@@ -195,10 +249,14 @@ exports.sendPhoto = asyncHandler(async(req, res, next) => {
     await res.status(200).sendFile(file);
 });
 
+// NEED TO ADD EMAIL VERIFICATION for the register !!! <------
+// Send Emails for mentor and startup-users if any corection made
+
 // @desc    Forgot password
 // @route   POST /api/v1/auth/forgotpassword
 // @access  Public
 exports.forgotPassword = asyncHandler(async(req, res, next) => {
+
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
@@ -273,6 +331,7 @@ exports.resetPassword = asyncHandler(async(req, res, next) => {
 
 //  Get token from model, create cookieand send response
 const sendTokenResponse = async(user, statusCode, res) => {
+
     //Create token
     const token = user.getSignedJwtToken();
     let count = 0;
