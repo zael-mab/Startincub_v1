@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
-// const dotenv = require('dotenv');
+const dotenv = require('dotenv');
 
-// dotenv.config({ path: '../config/config.env' });
+dotenv.config({ path: '../config/config.env' });
 
 const sendEmail = async(options) => {
 
